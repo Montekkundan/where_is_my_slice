@@ -6,7 +6,12 @@ import numpy as np
 import pytest
 from PIL import Image
 
-from slicegps.error_detection import detector_scores, error_features, fit_detector
+from slicegps.error_detection import (
+    detector_scores,
+    error_features,
+    fit_detector,
+    normalize_stack_features,
+)
 from slicegps.error_review import review_errors
 from slicegps.pairwise_qa import PairwiseFeatures, comparison_features, self_similarity
 
@@ -57,12 +62,14 @@ def test_saved_paired_model_uses_same_pixels_and_features_as_benchmark(tmp_path)
     x = np.column_stack(
         (error_features(altered, images), PairwiseFeatures(images).measure(altered))
     )
+    x = normalize_stack_features(x)
     labels = np.isin(np.arange(len(images)), [3, 4])
     model = fit_detector(x, labels)
     model.update(
         feature_contract="stack_error_pairwise_v1",
         expected_mri_required=True,
         learned_features=False,
+        stack_normalized=True,
         image_size=24,
         threshold=0.0,
     )

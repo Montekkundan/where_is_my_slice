@@ -20,6 +20,8 @@ def summarize(runs: list[Path], output: Path):
             if report.get("pairwise_comparisons")
             else ("learned" if report["learned_features"] else "baseline")
         )
+        if report.get("stack_normalized"):
+            features += "_normalized"
         scope = "calibrated" if report["protocol"]["donor_calibrated"] else "independent"
         name = f"error_detection_{features}_{scope}"
         write_json(output / f"{name}.json", report)
@@ -37,7 +39,7 @@ def summarize(runs: list[Path], output: Path):
                         }
                     )
     with (output / "error_detection.csv").open("w", newline="") as stream:
-        writer = csv.DictWriter(stream, fieldnames=list(rows[0]))
+        writer = csv.DictWriter(stream, fieldnames=list(rows[0]), lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows)
     return rows

@@ -125,3 +125,16 @@ def test_paper_estimation_is_pixel_based_and_retains_canvas():
     assert processed[0, 30, 25] > 0
     assert processed[0, 10, 10] == 0
     assert processed[0, 12, 45] == 0
+
+
+def test_stack_normalization_uses_only_observations_and_excludes_unsupported_edges():
+    from slicegps.error_detection import normalize_stack_features
+
+    x = np.arange(36, dtype=float).reshape(12, 3)
+    normalized = normalize_stack_features(x)
+    np.testing.assert_allclose(normalized, normalize_stack_features(x * [2, 3, 5] + 10))
+    x[:2] += 10000
+    x[-2:] -= 10000
+    np.testing.assert_allclose(normalize_stack_features(x)[2:-2], normalized[2:-2])
+    with pytest.raises(ValueError, match="nine"):
+        normalize_stack_features(x[:8])

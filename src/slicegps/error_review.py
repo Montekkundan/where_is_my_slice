@@ -12,7 +12,12 @@ import numpy as np
 from PIL import Image
 
 from .data import write_json
-from .error_detection import context_features, detector_scores, error_features
+from .error_detection import (
+    context_features,
+    detector_scores,
+    error_features,
+    normalize_stack_features,
+)
 from .retrieval import _prepare
 
 
@@ -86,6 +91,8 @@ def review_errors(
         if encoder.metadata["model_revision"] != model["encoder_revision"]:
             raise ValueError("DINOv2 model revision mismatch")
         measurements = np.column_stack((measurements, extra))
+    if model.get("stack_normalized", False):
+        measurements = normalize_stack_features(measurements)
     scores = detector_scores(measurements, model)
     rows, cards = [], []
     for i, (path, score, image) in enumerate(zip(sections, scores, images, strict=True)):
@@ -117,6 +124,7 @@ def review_errors(
         "schema_version": 1,
         "threshold": model["threshold"],
         "expected_mri_required": model["expected_mri_required"],
+        "stack_normalized": model.get("stack_normalized", False),
         "sections": rows,
         "flagged_indices": [row["input_index"] for row in rows if row["flagged"]],
         "limitations": [
@@ -127,6 +135,8 @@ def review_errors(
             "Empty or constant sections are rejected explicitly",
         ],
     }
+    if model.get("stack_normalized", False):
+        result["limitations"].append("Stack calibration assumes most supplied sections are correct")
     output.mkdir(parents=True)
     write_json(output / "errors.json", result)
     (output / "index.html").write_text(

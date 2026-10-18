@@ -18,13 +18,16 @@ from slicegps.error_detection import (
     error_features,
     fit_detector,
     inject_errors,
+    normalize_stack_features,
     select_threshold,
     spatial_splits,
 )
 from slicegps.sbr import SBR_REVISION, fetch_sbr, load_sbr
 
 
-def make_examples(histology, mri, trials, seed, encoder=None, pairwise=False):
+def make_examples(
+    histology, mri, trials, seed, encoder=None, pairwise=False, stack_normalized=False
+):
     """Same seeds apply to each method. Truth is consumed only after feature extraction."""
     rows, labels, kinds, trial_ids, slots = [], [], [], [], []
     descriptor_cache = {}
@@ -70,6 +73,8 @@ def make_examples(histology, mri, trials, seed, encoder=None, pairwise=False):
                     )
                 )
                 measurements = np.column_stack((measurements, extra))
+            if stack_normalized:
+                measurements = normalize_stack_features(measurements)
             selected = np.arange(2, len(histology) - 2)
             rows.append(measurements[selected])
             labels.extend(truth["is_error"][selected])
@@ -109,6 +114,7 @@ def run(
     encoder=None,
     donor_calibrated: bool = False,
     pairwise: bool = False,
+    stack_normalized: bool = False,
 ):
     if output.exists():
         raise FileExistsError(output)
@@ -139,7 +145,13 @@ def run(
             print(f"Preparing {name} {dataset}: {len(selected)} unique sections", flush=True)
             parts.append(
                 make_examples(
-                    histology[selected], reference_mri[selected], trials, seed, encoder, pairwise
+                    histology[selected],
+                    reference_mri[selected],
+                    trials,
+                    seed,
+                    encoder,
+                    pairwise,
+                    stack_normalized,
                 )
             )
         examples[name] = tuple(np.concatenate([part[i] for part in parts]) for i in range(5))
@@ -165,6 +177,7 @@ def run(
             if paired and pairwise
             else "stack_error_features_v3",
             image_size=image_size,
+            stack_normalized=stack_normalized,
             learned_features=encoder is not None,
             training_dataset="BigBrain+Allen" if donor_calibrated else "BigBrain",
             source_revision=SBR_REVISION,
@@ -189,7 +202,9 @@ def run(
         else:
             h, t, section_ids = load_sbr(root, dataset, size=image_size)
         print(f"Testing {dataset}: {len(h)} unique sections", flush=True)
-        x, truth, kinds, trial_ids, slots = make_examples(h, t, trials, 48301, encoder, pairwise)
+        x, truth, kinds, trial_ids, slots = make_examples(
+            h, t, trials, 48301, encoder, pairwise, stack_normalized
+        )
         observed = {}
         for name, model in models.items():
             scores = detector_scores(subset_features(x, model["expected_mri_required"]), model)
@@ -214,6 +229,8 @@ def run(
                         np.sum(flipped * reference, axis=1) - np.sum(desc * reference, axis=1),
                     )
                 )
+            if stack_normalized:
+                clean_measurements = normalize_stack_features(clean_measurements)
             clean_scores = detector_scores(
                 subset_features(clean_measurements, model["expected_mri_required"]), model
             )
@@ -233,7 +250,7 @@ def run(
                 ),
             }
             with (output / f"{dataset}_{name}.csv").open("w", newline="") as stream:
-                writer = csv.writer(stream)
+                writer = csv.writer(stream, lineterminator="\n")
                 writer.writerow(
                     ["kind", "trial", "slot", "expected_section_id", "is_error", "score", "flagged"]
                 )
@@ -263,6 +280,7 @@ def run(
         "source_revision": SBR_REVISION,
         "learned_features": encoder.metadata if encoder is not None else None,
         "pairwise_comparisons": pairwise,
+        "stack_normalized": stack_normalized,
         "source": manifest["source"],
         "paper": manifest["paper"],
         "protocol": {
@@ -278,6 +296,9 @@ def run(
             "guard_sections": 3,
             "context_radius_sections": 2,
             "image_size": image_size,
+            "stack_normalization": "Observed stack median/IQR; boundary rows excluded"
+            if stack_normalized
+            else "None",
             "comparisons": "Self-similarity, NMI and reciprocal swap gains"
             if pairwise
             else "Baseline local context",
@@ -306,6 +327,10 @@ def run(
             "Near swaps exchange adjacent available sections; far swaps span at least 1/4 stack",
         ],
     }
+    if stack_normalized:
+        report["limitations"].append(
+            "Per-stack median/IQR calibration assumes a mostly correct observed stack"
+        )
     write_json(output / "metrics.json", report)
     return report
 
@@ -320,6 +345,7 @@ if __name__ == "__main__":
     methods.add_argument("--learned", action="store_true")
     methods.add_argument("--pairwise", action="store_true")
     parser.add_argument("--donor-calibrated", action="store_true")
+    parser.add_argument("--stack-normalized", action="store_true")
     args = parser.parse_args()
     encoder = None
     if args.learned:
@@ -334,4 +360,5 @@ if __name__ == "__main__":
         encoder,
         args.donor_calibrated,
         args.pairwise,
+        args.stack_normalized,
     )

@@ -154,6 +154,23 @@ def error_features(
     return result
 
 
+def normalize_stack_features(values: np.ndarray) -> np.ndarray:
+    """Robust unsupervised calibration using the current stack, assuming a clean majority.
+
+    All input rows are observations, never a supplied clean reference. Boundary
+    rows lack full context and do not determine the median or interquartile range.
+    This is a transductive stack algorithm, not independent per-image inference.
+    """
+    values = np.asarray(values, dtype=float)
+    if values.ndim != 2 or len(values) < 9 or not np.isfinite(values).all():
+        raise ValueError("Stack normalization requires at least nine finite feature rows")
+    interior = values[2:-2]
+    center = np.median(interior, axis=0)
+    lower, upper = np.percentile(interior, (25, 75), axis=0)
+    scale = np.maximum(upper - lower, 1e-3)
+    return np.clip((values - center) / scale, -10, 10)
+
+
 def inject_errors(images: np.ndarray, kind: str, fraction: float, seed: int) -> tuple:
     """Corrupt a complete stack; return truth separately from the detector input.
 
