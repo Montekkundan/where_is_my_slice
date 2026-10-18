@@ -162,7 +162,7 @@ def export(run: Path, output: Path):
     )
     output.mkdir(parents=True, exist_ok=True)
     with (output / "benchmarks.csv").open("w", newline="") as stream:
-        writer = csv.DictWriter(stream, fieldnames=list(rows[0]))
+        writer = csv.DictWriter(stream, fieldnames=list(rows[0]), lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows)
     for source, destination in (
