@@ -24,4 +24,3 @@ extend-exclude = ["._*"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B"]
-
