@@ -24,11 +24,17 @@ from slicegps.error_detection import (
 from slicegps.sbr import SBR_REVISION, fetch_sbr, load_sbr
 
 
-def make_examples(histology, mri, trials, seed, encoder=None):
+def make_examples(histology, mri, trials, seed, encoder=None, pairwise=False):
     """Same seeds apply to each method. Truth is consumed only after feature extraction."""
     rows, labels, kinds, trial_ids, slots = [], [], [], [], []
     descriptor_cache = {}
+    measurement_cache = {}
     reference = None
+    comparator = None
+    if pairwise:
+        from slicegps.pairwise_qa import PairwiseFeatures
+
+        comparator = PairwiseFeatures(mri)
     if encoder is not None:
         bank = np.concatenate((histology, histology[:, :, ::-1], mri))
         print(f"Encoding {len(bank)} pinned DINOv2 images", flush=True)
@@ -51,7 +57,9 @@ def make_examples(histology, mri, trials, seed, encoder=None):
     for k, kind in enumerate(ERROR_KINDS):
         for trial in range(trials):
             observed, truth = inject_errors(histology, kind, 0.05, seed + k * 10000 + trial)
-            measurements = error_features(observed, mri)
+            measurements = error_features(observed, mri, cache=measurement_cache)
+            if comparator is not None:
+                measurements = np.column_stack((measurements, comparator.measure(observed)))
             if encoder is not None:
                 desc, flipped = embeddings(observed), embeddings(observed[:, :, ::-1])
                 extra = np.column_stack(
@@ -100,19 +108,23 @@ def run(
     fetch: bool = True,
     encoder=None,
     donor_calibrated: bool = False,
+    pairwise: bool = False,
 ):
     if output.exists():
         raise FileExistsError(output)
     if trials < 2:
         raise ValueError("At least two corruption trials are required")
     manifest = fetch_sbr(root) if fetch else json.loads((root / "sources.json").read_text())
-    hist, mri, ids = load_sbr(root, "BigBrain")
+    if pairwise and encoder is not None:
+        raise ValueError("Choose either pairwise comparisons or learned DINO features")
+    image_size = 192 if pairwise else 96
+    hist, mri, ids = load_sbr(root, "BigBrain", size=image_size)
     split = spatial_splits(len(hist))
     output.mkdir(parents=True)
     datasets = {"BigBrain": (hist, mri, ids)}
     splits = {"BigBrain": split}
     if donor_calibrated:
-        datasets["Allen_labels"] = load_sbr(root, "Allen_labels")
+        datasets["Allen_labels"] = load_sbr(root, "Allen_labels", size=image_size)
         splits["Allen_labels"] = spatial_splits(len(datasets["Allen_labels"][0]))
     split_ids = {
         dataset: {key: [data[2][i] for i in selected] for key, selected in splits[dataset].items()}
@@ -126,7 +138,9 @@ def run(
             selected = splits[dataset][name]
             print(f"Preparing {name} {dataset}: {len(selected)} unique sections", flush=True)
             parts.append(
-                make_examples(histology[selected], reference_mri[selected], trials, seed, encoder)
+                make_examples(
+                    histology[selected], reference_mri[selected], trials, seed, encoder, pairwise
+                )
             )
         examples[name] = tuple(np.concatenate([part[i] for part in parts]) for i in range(5))
     x_train, y_train, *_ = examples["train"]
@@ -147,7 +161,10 @@ def run(
         model.update(
             threshold=threshold,
             expected_mri_required=paired,
-            feature_contract="stack_error_features_v3",
+            feature_contract="stack_error_pairwise_v1"
+            if paired and pairwise
+            else "stack_error_features_v3",
+            image_size=image_size,
             learned_features=encoder is not None,
             training_dataset="BigBrain+Allen" if donor_calibrated else "BigBrain",
             source_revision=SBR_REVISION,
@@ -170,15 +187,21 @@ def run(
             h, t = histology[selected], reference_mri[selected]
             section_ids = [donor_ids[i] for i in selected]
         else:
-            h, t, section_ids = load_sbr(root, dataset)
+            h, t, section_ids = load_sbr(root, dataset, size=image_size)
         print(f"Testing {dataset}: {len(h)} unique sections", flush=True)
-        x, truth, kinds, trial_ids, slots = make_examples(h, t, trials, 48301, encoder)
+        x, truth, kinds, trial_ids, slots = make_examples(h, t, trials, 48301, encoder, pairwise)
         observed = {}
         for name, model in models.items():
             scores = detector_scores(subset_features(x, model["expected_mri_required"]), model)
             flags = scores > model["threshold"]
             by_kind = metrics_by_kind(truth, flags, kinds)
             clean_measurements = error_features(h, t)
+            if pairwise:
+                from slicegps.pairwise_qa import PairwiseFeatures
+
+                clean_measurements = np.column_stack(
+                    (clean_measurements, PairwiseFeatures(t).measure(h))
+                )
             if encoder is not None:
                 desc = encoder.encode(h, pooling="spatial")
                 flipped = encoder.encode(h[:, :, ::-1], pooling="spatial")
@@ -239,6 +262,7 @@ def run(
         "schema_version": 1,
         "source_revision": SBR_REVISION,
         "learned_features": encoder.metadata if encoder is not None else None,
+        "pairwise_comparisons": pairwise,
         "source": manifest["source"],
         "paper": manifest["paper"],
         "protocol": {
@@ -253,7 +277,10 @@ def run(
             "donor_calibrated": donor_calibrated,
             "guard_sections": 3,
             "context_radius_sections": 2,
-            "image_size": 96,
+            "image_size": image_size,
+            "comparisons": "Self-similarity, NMI and reciprocal swap gains"
+            if pairwise
+            else "Baseline local context",
             "preprocessing": (
                 "Publisher affine-aligned images, common canvas retained; "
                 "tissue-based tear placement"
@@ -289,7 +316,9 @@ if __name__ == "__main__":
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--trials", type=int, default=20)
     parser.add_argument("--skip-fetch", action="store_true")
-    parser.add_argument("--learned", action="store_true")
+    methods = parser.add_mutually_exclusive_group()
+    methods.add_argument("--learned", action="store_true")
+    methods.add_argument("--pairwise", action="store_true")
     parser.add_argument("--donor-calibrated", action="store_true")
     args = parser.parse_args()
     encoder = None
@@ -297,4 +326,12 @@ if __name__ == "__main__":
         from slicegps.encoders import DinoEncoder
 
         encoder = DinoEncoder(Path("data/models"), device="auto", batch_size=8)
-    run(args.root, args.output, args.trials, not args.skip_fetch, encoder, args.donor_calibrated)
+    run(
+        args.root,
+        args.output,
+        args.trials,
+        not args.skip_fetch,
+        encoder,
+        args.donor_calibrated,
+        args.pairwise,
+    )

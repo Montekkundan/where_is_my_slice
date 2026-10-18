@@ -25,7 +25,8 @@ def review_errors(
 ) -> dict:
     """Write an image-based review without reading truth or extracting IDs from names."""
     model = json.loads(Path(model_path).read_text())
-    if model.get("feature_contract") != "stack_error_features_v3":
+    contract = model.get("feature_contract")
+    if contract not in ("stack_error_features_v3", "stack_error_pairwise_v1"):
         raise ValueError("Unknown detector feature contract")
     if model["expected_mri_required"] and mri_sections is None:
         raise ValueError("This detector requires the expected MRI plane for each input slot")
@@ -37,22 +38,34 @@ def review_errors(
     if output.exists():
         raise FileExistsError(output)
 
+    image_size = int(model.get("image_size", 96))
+    if contract == "stack_error_pairwise_v1" and not model["expected_mri_required"]:
+        raise ValueError("Paired comparison model requires expected MRI")
+
     def pixels(paths):
         values = []
         for path in paths:
             with Image.open(path) as image:
                 if image.mode in ("F", "I", "I;16"):
                     # Preserve scientific TIFF ranges; conversion to L clips float pixels.
-                    resized = image.convert("F").resize((96, 96), Image.Resampling.BILINEAR)
+                    resized = image.convert("F").resize(
+                        (image_size, image_size), Image.Resampling.BILINEAR
+                    )
                     values.append(np.asarray(resized, dtype=np.float32))
                 else:
-                    resized = image.convert("L").resize((96, 96), Image.Resampling.BILINEAR)
+                    resized = image.convert("L").resize(
+                        (image_size, image_size), Image.Resampling.BILINEAR
+                    )
                     values.append(np.asarray(resized, dtype=np.float32) / 255)
         return np.stack(values)
 
     images = pixels(sections)
     mri = pixels(mri_sections) if mri_sections is not None else None
     measurements = error_features(images, mri)
+    if contract == "stack_error_pairwise_v1":
+        from .pairwise_qa import PairwiseFeatures
+
+        measurements = np.column_stack((measurements, PairwiseFeatures(mri).measure(images)))
     if model["learned_features"]:
         if encoder is None:
             from .encoders import DinoEncoder

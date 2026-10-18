@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import hashlib
+
 import numpy as np
 from scipy.ndimage import binary_fill_holes, gaussian_filter, label
 from scipy.optimize import minimize
@@ -98,7 +100,9 @@ def context_features(desc: np.ndarray, flipped: np.ndarray) -> np.ndarray:
     return np.asarray(values)
 
 
-def error_features(images: np.ndarray, mri: np.ndarray | None = None) -> np.ndarray:
+def error_features(
+    images: np.ndarray, mri: np.ndarray | None = None, *, cache: dict | None = None
+) -> np.ndarray:
     """See pixels in nominal stack order, never IDs, source indices, or clean copies.
 
     Optional MRI planes must be in expected nominal order and approximately
@@ -115,13 +119,27 @@ def error_features(images: np.ndarray, mri: np.ndarray | None = None) -> np.ndar
         np.array([j for j in range(max(0, i - 2), min(count, i + 3)) if j != i])
         for i in range(count)
     ]
+
+    def cached_features(stack, method):
+        if cache is None:
+            return features(stack, method, size=24)
+        keys = [
+            (method, image.shape, image.dtype.str, hashlib.sha256(image.tobytes()).digest())
+            for image in stack
+        ]
+        missing = {key: image for key, image in zip(keys, stack, strict=True) if key not in cache}
+        if missing:
+            computed = features(np.stack(list(missing.values())), method, size=24)
+            cache.update(zip(missing, computed, strict=True))
+        return np.stack([cache[key] for key in keys])
+
     columns = []
     for method in ("intensity", "gradient", "mask"):
-        desc = features(images, method, size=24)
-        flipped = features(images[:, :, ::-1], method, size=24)
+        desc = cached_features(images, method)
+        flipped = cached_features(images[:, :, ::-1], method)
         columns.append(context_features(desc, flipped))
         if mri is not None:
-            reference = features(mri, method, size=24)
+            reference = cached_features(mri, method)
             similarity = np.sum(desc * reference, axis=1)
             flipped_similarity = np.sum(flipped * reference, axis=1)
             columns.append(np.column_stack((1 - similarity, flipped_similarity - similarity)))

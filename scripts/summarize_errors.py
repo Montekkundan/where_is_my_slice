@@ -15,7 +15,11 @@ def summarize(runs: list[Path], output: Path):
     rows = []
     for run in runs:
         report = json.loads((run / "metrics.json").read_text())
-        features = "learned" if report["learned_features"] else "baseline"
+        features = (
+            "pairwise"
+            if report.get("pairwise_comparisons")
+            else ("learned" if report["learned_features"] else "baseline")
+        )
         scope = "calibrated" if report["protocol"]["donor_calibrated"] else "independent"
         name = f"error_detection_{features}_{scope}"
         write_json(output / f"{name}.json", report)
