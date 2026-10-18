@@ -1,0 +1,40 @@
+{
+  "model": {
+    "id": "facebook/dinov2-small",
+    "revision": "ed25f3a31f01632728cabb09d1542f84ab7b0056",
+    "license": "Apache-2.0",
+    "source": "https://huggingface.co/facebook/dinov2-small",
+    "architecture": "ViT-S/14, 384 channels; frozen weights"
+  },
+  "preprocessing": {
+    "resize_short_edge": 256,
+    "center_crop": 224,
+    "scaling": "robust grayscale to uint8 RGB",
+    "normalization": "ImageNet mean/std, L2 feature vectors"
+  },
+  "data": [
+    {
+      "name": "BigBrain",
+      "source": "https://bigbrain.loris.ca/",
+      "license": "CC BY-NC-SA 4.0",
+      "terms": "https://bigbrain-ftp.loris.ca/bigbrain-ftp/License.txt",
+      "scope": "400um reconstructed histology registered to ICBM152; atlas MRI is not donor MRI",
+      "credit": "Amunts et al. (2013), BigBrain: An Ultrahigh-Resolution 3D Human Brain Model, Science, doi:10.1126/science.1235381"
+    },
+    {
+      "name": "NextBrain Case 4",
+      "source": "https://github.com/UCL/NextBrain-Case-4",
+      "revision": "7cac312e766d603e82928845538f2a2996ec38cb",
+      "license": "CC0",
+      "terms": "https://doi.org/10.5522/04/24243835",
+      "scope": "Registered human histology, donor MRI and block mappings; supplied geometry used for piece preparation",
+      "credit": "Iglesias et al., NextBrain; UCL BUNGEE-TOOLS data deposit"
+    },
+    {
+      "name": "Allen Human Brain Atlas",
+      "source": "https://brain-map.org/atlases/anatomy",
+      "scope": "Anatomical review reference only; this project has no validated downloadable paired MRI/transforms for the linked atlas"
+    }
+  ],
+  "image_rights": "BigBrain derived previews retain CC BY-NC-SA 4.0; images are resliced, scaled and arranged. NextBrain data deposit is CC0. These data rights are separate from code."
+}
