@@ -1,0 +1,289 @@
+{
+  "scope": "Spatial holdout within one registered volume, known crop, near-coronal",
+  "counts": {
+    "train": 192,
+    "validation": 24,
+    "test": 48,
+    "gallery": 128
+  },
+  "protocol_images_sha256": "062321999e28e00bf6303dbaa9f120495881cc6d910a8cf76c4be0205ae6eb6f",
+  "seed": 26018,
+  "interpolation_padding_mm": 0.5,
+  "minimum_cross_split_support_gap_mm": 3.6412826454029243,
+  "encoder": {
+    "model_id": "facebook/dinov2-small",
+    "model_revision": "ed25f3a31f01632728cabb09d1542f84ab7b0056",
+    "feature_fingerprint": "6d27d8ab700f668d07e01a9e41fbc82bb34f3d9d4ed6ab14c618520c85fc6599",
+    "package_versions": {
+      "torch": "2.14.1",
+      "transformers": "5.20.1",
+      "Pillow": "13.0.0",
+      "numpy": "2.5.4"
+    }
+  },
+  "selected_by_validation": {
+    "method": "dino_spatial",
+    "pooling": "spatial",
+    "regularization": null,
+    "validation_recall_at_1": 0.6666666666666666,
+    "validation_median_error_mm": 3.2668529488160516
+  },
+  "test_results": [
+    {
+      "method": "intensity",
+      "query_count": 48,
+      "gallery_count": 128,
+      "k": 5,
+      "tolerance_mm": 5.0,
+      "top1_median_error_mm": 43.52130395101675,
+      "top1_p95_error_mm": 86.04876732062006,
+      "recall_at_k": {
+        "1": 0.0,
+        "2": 0.0,
+        "3": 0.0,
+        "4": 0.0,
+        "5": 0.0
+      },
+      "metric_note": "Known centers in a shared mm frame; center error does not score plane angle.",
+      "ordering_inversion_fraction": 0.3891843971631206,
+      "ties_in_predicted_depth": 40,
+      "ordering_kendall_tau_b": 0.22012639838847003,
+      "retrieved_plane_angle_median_deg": 0.7376081060209418,
+      "retrieved_plane_angle_p95_deg": 1.19031712075059
+    },
+    {
+      "method": "gradient",
+      "query_count": 48,
+      "gallery_count": 128,
+      "k": 5,
+      "tolerance_mm": 5.0,
+      "top1_median_error_mm": 95.17716721395021,
+      "top1_p95_error_mm": 133.68937851670046,
+      "recall_at_k": {
+        "1": 0.020833333333333332,
+        "2": 0.041666666666666664,
+        "3": 0.041666666666666664,
+        "4": 0.25,
+        "5": 0.375
+      },
+      "metric_note": "Known centers in a shared mm frame; center error does not score plane angle.",
+      "ordering_inversion_fraction": 0.5957446808510638,
+      "ties_in_predicted_depth": 42,
+      "ordering_kendall_tau_b": -0.20952372848350934,
+      "retrieved_plane_angle_median_deg": 0.7376081060209418,
+      "retrieved_plane_angle_p95_deg": 1.19031712075059
+    },
+    {
+      "method": "mask",
+      "query_count": 48,
+      "gallery_count": 128,
+      "k": 5,
+      "tolerance_mm": 5.0,
+      "top1_median_error_mm": 44.17808231193422,
+      "top1_p95_error_mm": 82.06339426473197,
+      "recall_at_k": {
+        "1": 0.0,
+        "2": 0.0,
+        "3": 0.0,
+        "4": 0.020833333333333332,
+        "5": 0.020833333333333332
+      },
+      "metric_note": "Known centers in a shared mm frame; center error does not score plane angle.",
+      "ordering_inversion_fraction": 0.4654255319148936,
+      "ties_in_predicted_depth": 47,
+      "ordering_kendall_tau_b": null,
+      "retrieved_plane_angle_median_deg": 0.7376081060209418,
+      "retrieved_plane_angle_p95_deg": 1.19031712075059
+    },
+    {
+      "method": "dino_cls",
+      "query_count": 48,
+      "gallery_count": 128,
+      "k": 5,
+      "tolerance_mm": 5.0,
+      "top1_median_error_mm": 36.03867156430874,
+      "top1_p95_error_mm": 120.15387330442665,
+      "recall_at_k": {
+        "1": 0.10416666666666667,
+        "2": 0.22916666666666666,
+        "3": 0.2916666666666667,
+        "4": 0.3958333333333333,
+        "5": 0.4583333333333333
+      },
+      "metric_note": "Known centers in a shared mm frame; center error does not score plane angle.",
+      "ordering_inversion_fraction": 0.7039007092198581,
+      "ties_in_predicted_depth": 37,
+      "ordering_kendall_tau_b": -0.4243294293705455,
+      "retrieved_plane_angle_median_deg": 0.7376081060209418,
+      "retrieved_plane_angle_p95_deg": 1.19031712075059
+    },
+    {
+      "method": "ridge_cls",
+      "query_count": 48,
+      "gallery_count": 128,
+      "k": 5,
+      "tolerance_mm": 5.0,
+      "top1_median_error_mm": 13.914311650449754,
+      "top1_p95_error_mm": 20.130479106700548,
+      "recall_at_k": {
+        "1": 0.20833333333333334,
+        "2": 0.22916666666666666,
+        "3": 0.2916666666666667,
+        "4": 0.2916666666666667,
+        "5": 0.2916666666666667
+      },
+      "metric_note": "Known centers in a shared mm frame; center error does not score plane angle.",
+      "ordering_inversion_fraction": 0.15336879432624115,
+      "ties_in_predicted_depth": 39,
+      "ordering_kendall_tau_b": 0.7511230797190785,
+      "retrieved_plane_angle_median_deg": 0.7376081060209418,
+      "retrieved_plane_angle_p95_deg": 1.19031712075059
+    },
+    {
+      "method": "dino_spatial",
+      "query_count": 48,
+      "gallery_count": 128,
+      "k": 5,
+      "tolerance_mm": 5.0,
+      "top1_median_error_mm": 8.857529868064209,
+      "top1_p95_error_mm": 128.80340803342108,
+      "recall_at_k": {
+        "1": 0.3958333333333333,
+        "2": 0.6041666666666666,
+        "3": 0.6041666666666666,
+        "4": 0.625,
+        "5": 0.6458333333333334
+      },
+      "metric_note": "Known centers in a shared mm frame; center error does not score plane angle.",
+      "ordering_inversion_fraction": 0.5088652482269503,
+      "ties_in_predicted_depth": 37,
+      "ordering_kendall_tau_b": -0.004757996394585064,
+      "retrieved_plane_angle_median_deg": 0.7376081060209418,
+      "retrieved_plane_angle_p95_deg": 1.19031712075059
+    },
+    {
+      "method": "ridge_spatial",
+      "query_count": 48,
+      "gallery_count": 128,
+      "k": 5,
+      "tolerance_mm": 5.0,
+      "top1_median_error_mm": 13.26470630396618,
+      "top1_p95_error_mm": 17.518613114091423,
+      "recall_at_k": {
+        "1": 0.1875,
+        "2": 0.20833333333333334,
+        "3": 0.2708333333333333,
+        "4": 0.2916666666666667,
+        "5": 0.2916666666666667
+      },
+      "metric_note": "Known centers in a shared mm frame; center error does not score plane angle.",
+      "ordering_inversion_fraction": 0.09663120567375887,
+      "ties_in_predicted_depth": 39,
+      "ordering_kendall_tau_b": 0.8555131770172476,
+      "retrieved_plane_angle_median_deg": 0.7376081060209418,
+      "retrieved_plane_angle_p95_deg": 1.19031712075059
+    }
+  ],
+  "oracle": {
+    "query_count": 48,
+    "gallery_count": 128,
+    "k": 5,
+    "tolerance_mm": 5.0,
+    "top1_median_error_mm": 0.23742363567516422,
+    "top1_p95_error_mm": 0.4922080469816164,
+    "recall_at_k": {
+      "1": 1.0,
+      "2": 1.0,
+      "3": 1.0,
+      "4": 1.0,
+      "5": 1.0
+    },
+    "metric_note": "Known centers in a shared mm frame; center error does not score plane angle."
+  },
+  "random": {
+    "query_count": 48,
+    "gallery_count": 128,
+    "k": 5,
+    "tolerance_mm": 5.0,
+    "top1_median_error_mm": 43.783592352208586,
+    "top1_p95_error_mm": 105.27554989892555,
+    "recall_at_k": {
+      "1": 0.041666666666666664,
+      "2": 0.14583333333333334,
+      "3": 0.20833333333333334,
+      "4": 0.25,
+      "5": 0.3125
+    },
+    "metric_note": "Known centers in a shared mm frame; center error does not score plane angle."
+  },
+  "dual_contrastive_pose": {
+    "architecture": {
+      "histology_input_dim": 6144,
+      "mri_input_dim": 6144,
+      "hidden_dim": 256,
+      "embedding_dim": 128,
+      "pose_dim": 6,
+      "activation": "GELU"
+    },
+    "config": {
+      "epochs": 100,
+      "seed": 26019,
+      "batch_size": 32,
+      "learning_rate": 0.001,
+      "temperature": 0.07,
+      "pose_weight": 0.1,
+      "validation_every": 5,
+      "patience_checks": 8,
+      "device_requested": "cpu",
+      "device_used": "cpu"
+    },
+    "selected_epoch": 30,
+    "epochs_completed": 70,
+    "test_retrieval": {
+      "query_count": 48,
+      "gallery_count": 128,
+      "k": 5,
+      "tolerance_mm": 5.0,
+      "top1_median_error_mm": 13.633502960205078,
+      "top1_p95_error_mm": 51.596566677093506,
+      "recall_at_k": {
+        "1": 0.08333333333333333,
+        "2": 0.125,
+        "3": 0.25,
+        "4": 0.3125,
+        "5": 0.3333333333333333
+      },
+      "metric_note": "Known centers in a shared mm frame; center error does not score plane angle."
+    },
+    "test_pose": {
+      "center_median_error_mm": 23.895843505859375,
+      "center_p95_error_mm": 68.68560028076172,
+      "normal_median_angle_deg": 46.33631896972656,
+      "normal_p95_angle_deg": 78.05455017089844,
+      "normal_metric": "acos oriented unit-normal dot product; in-plane rotation unmeasured"
+    },
+    "training_mean_pose_prior_baseline": {
+      "center_median_error_mm": 34.843406677246094,
+      "center_p95_error_mm": 72.72871398925781,
+      "normal_median_angle_deg": 0.7382609844207764,
+      "normal_p95_angle_deg": 1.2009309530258179,
+      "normal_metric": "acos oriented unit-normal dot product; in-plane rotation unmeasured"
+    },
+    "limitations": [
+      "Exploratory reuse of a test set already exposed by earlier ridge experiments",
+      "Same-volume synthetic query planes; no independent donor validation",
+      "BigBrain atlas pairing is not donor-specific MRI correspondence",
+      "Known crop and near-coronal normals; center plus normal excludes in-plane rotation",
+      "No validated raw-histology or unknown-fragment pose prediction"
+    ]
+  },
+  "limits": [
+    "No independent donor holdout",
+    "No unknown fragment/pose validation",
+    "BigBrain paired atlas is not donor MRI",
+    "No tissue registration estimate",
+    "Exploratory results: this spatial test set was inspected during project development.",
+    "Frozen spatial DINO has large tail errors; improved median does not imply reliable order."
+  ],
+  "reproduce": "python scripts/run_experiments.py --output outputs/run --device auto"
+}

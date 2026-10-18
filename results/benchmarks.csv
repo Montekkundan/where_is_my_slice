@@ -1,0 +1,17 @@
+dataset,method,queries,candidates,tolerance_mm,median_error_mm,p95_error_mm,recall_at_1,recall_at_5,exact_pair_accuracy,scope
+BigBrain,intensity,48,128,5.0,43.52130395101675,86.04876732062006,0.0,0.0,,"Spatial holdout within one registered volume, known crop, near-coronal"
+BigBrain,gradient,48,128,5.0,95.17716721395021,133.68937851670046,0.020833333333333332,0.375,,"Spatial holdout within one registered volume, known crop, near-coronal"
+BigBrain,mask,48,128,5.0,44.17808231193422,82.06339426473197,0.0,0.020833333333333332,,"Spatial holdout within one registered volume, known crop, near-coronal"
+BigBrain,dino_cls,48,128,5.0,36.03867156430874,120.15387330442665,0.10416666666666667,0.4583333333333333,,"Spatial holdout within one registered volume, known crop, near-coronal"
+BigBrain,ridge_cls,48,128,5.0,13.914311650449754,20.130479106700548,0.20833333333333334,0.2916666666666667,,"Spatial holdout within one registered volume, known crop, near-coronal"
+BigBrain,dino_spatial,48,128,5.0,8.857529868064209,128.80340803342108,0.3958333333333333,0.6458333333333334,,"Spatial holdout within one registered volume, known crop, near-coronal"
+BigBrain,ridge_spatial,48,128,5.0,13.26470630396618,17.518613114091423,0.1875,0.2916666666666667,,"Spatial holdout within one registered volume, known crop, near-coronal"
+BigBrain,dual_contrastive_pose,48,128,5.0,13.633502960205078,51.596566677093506,0.08333333333333333,0.3333333333333333,,"Spatial holdout within one registered volume, known crop, near-coronal"
+P85-18,intensity,8,60,5.0,0.0,0.6154824700941807,1.0,1.0,0.75,pooled real MRI JPEGs from known blocks; publisher-registered crop and orientation
+P85-18,gradient,8,60,5.0,0.0,0.6154824700941807,1.0,1.0,0.625,pooled real MRI JPEGs from known blocks; publisher-registered crop and orientation
+P85-18,mask,8,60,5.0,0.0,0.9885021489391388,1.0,1.0,0.625,pooled real MRI JPEGs from known blocks; publisher-registered crop and orientation
+P85-18,dino_spatial,8,60,5.0,2.913630320937399,4.540265349538387,1.0,1.0,0.125,pooled real MRI JPEGs from known blocks; publisher-registered crop and orientation
+P41-16,intensity,8,32,5.0,0.6212867552956404,7.586562792346451,0.875,1.0,0.25,pooled real MRI JPEGs from known blocks; publisher-registered crop and orientation
+P41-16,gradient,8,32,5.0,0.15602213553203692,1.2315942453117135,1.0,1.0,0.5,pooled real MRI JPEGs from known blocks; publisher-registered crop and orientation
+P41-16,mask,8,32,5.0,0.6212867552956404,3.7445312527688857,1.0,1.0,0.125,pooled real MRI JPEGs from known blocks; publisher-registered crop and orientation
+P41-16,dino_spatial,8,32,5.0,0.15602213553203692,3.9473600289605337,1.0,1.0,0.5,pooled real MRI JPEGs from known blocks; publisher-registered crop and orientation

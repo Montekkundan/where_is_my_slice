@@ -31,6 +31,15 @@
       "credit": "Iglesias et al., NextBrain; UCL BUNGEE-TOOLS data deposit"
     },
     {
+      "name": "NextBrain Case 2",
+      "source": "https://github.com/UCL/NextBrain-Case-2",
+      "revision": "9c29e15e2eef6db902296f53de636d57fc5aa6a1",
+      "license": "CC0",
+      "terms": "https://doi.org/10.5522/04/24243835",
+      "scope": "External donor P41-16; real publisher-registered HE/MRI JPEGs from two known blocks",
+      "credit": "Iglesias et al., NextBrain; UCL BUNGEE-TOOLS data deposit"
+    },
+    {
       "name": "Allen Human Brain Atlas",
       "source": "https://brain-map.org/atlases/anatomy",
       "scope": "Anatomical review reference only; this project has no validated downloadable paired MRI/transforms for the linked atlas"

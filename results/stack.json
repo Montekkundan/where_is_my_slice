@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "seed": 26020,
+  "scope": "controlled synthetic corruption of all prepared query sections",
+  "reference_space": "MNI ICBM152 2009b symmetric",
+  "truth_used_for": "scoring only; never pixel retrieval, flip selection or heuristic flags",
+  "metrics": {
+    "evaluated_queries": 48,
+    "ordering_inversion_fraction": 0.4104609929078014,
+    "input_order_inversion_fraction": 0.47429078014184395,
+    "depth_kendall_tau_b": 0.18072872359892522,
+    "center_error_median_mm": 7.078613937036411,
+    "center_error_p95_mm": 128.34454646905732,
+    "flip_detection": {
+      "evaluated_queries": 48,
+      "true_positive": 2,
+      "false_positive": 19,
+      "false_negative": 0,
+      "true_negative": 27,
+      "precision": 0.09523809523809523,
+      "recall": 1.0
+    },
+    "corruption_detection": {
+      "evaluated_queries": 48,
+      "true_positive": 2,
+      "false_positive": 0,
+      "false_negative": 0,
+      "true_negative": 46,
+      "precision": 1.0,
+      "recall": 1.0
+    },
+    "tie_note": "inversion uses stable gallery tie order; Kendall tau-b accounts for tied depths"
+  },
+  "limits": [
+    "symmetric anatomy can make horizontal flips ambiguous",
+    "cosine margins and pixel flags are uncalibrated heuristics",
+    "depth sorting assumes roughly coronal sections and known reference geometry",
+    "synthetic damage results do not establish real human histology accuracy",
+    "large gaps are ambiguous, not automatic evidence of missing sections"
+  ]
+}
