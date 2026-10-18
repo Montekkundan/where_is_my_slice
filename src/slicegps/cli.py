@@ -159,9 +159,32 @@ def main(argv=None) -> None:
     external.add_argument("--output", type=Path, required=True)
     external.add_argument("--source-manifest", type=Path)
     _encoder_options(external)
+    fetch_sbr = commands.add_parser("fetch-sbr", help="Download pinned donor-matched paper pairs")
+    fetch_sbr.add_argument("--root", type=Path, default=Path("data/synthbyreg"))
+    errors = commands.add_parser("detect-errors", help="Review errors in a nominally ordered stack")
+    errors.add_argument("model", type=Path)
+    errors.add_argument("sections", type=Path, nargs="+")
+    errors.add_argument("--mri", type=Path, nargs="+")
+    errors.add_argument("--output", type=Path, required=True)
     args = parser.parse_args(argv)
     try:
-        if args.command == "fetch-bigbrain":
+        if args.command == "fetch-sbr":
+            from .sbr import fetch_sbr
+
+            manifest = fetch_sbr(args.root)
+            result = {
+                "counts": {key: len(rows) for key, rows in manifest["datasets"].items()},
+                "manual_landmark_files": manifest["manual_landmark_files"],
+            }
+        elif args.command == "detect-errors":
+            from .error_review import review_errors
+
+            reviewed = review_errors(args.model, args.sections, args.output, args.mri)
+            result = {
+                "viewer": str((args.output / "index.html").resolve()),
+                "flagged_indices": reviewed["flagged_indices"],
+            }
+        elif args.command == "fetch-bigbrain":
             result = fetch_bigbrain(args.root)
         elif args.command == "fetch-nextbrain":
             result = fetch_nextbrain(args.root)
