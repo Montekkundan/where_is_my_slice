@@ -70,6 +70,7 @@ def generate(
     seed: int = 17,
     reference_space: str = "unspecified; caller must verify registration",
     assume_mm: bool = False,
+    augment: bool = False,
 ) -> dict:
     if count < 4 or size < 8 or pixel_mm <= 0 or not np.isfinite(pixel_mm):
         raise ValueError("Require count >=4, size >=8 and positive pixel size")
@@ -115,6 +116,10 @@ def generate(
         query = gaussian_filter(query, sigma=0.5)
         query[~valid] = 0
         try:
+            if augment:
+                from .augmentation import augment_histology
+
+                query = augment_histology(query, rng)
             for method in ("intensity", "gradient", "mask"):
                 features(np.stack((h, m, query)), method)
         except ValueError as exc:
@@ -147,6 +152,9 @@ def generate(
         "count": len(planes),
         "nominal_gallery_spacing_mm": step,
         "max_query_tilt_deg_per_axis": tilt_deg,
+        "query_augmentations": (
+            "gamma/gain, blur, synthetic tear and missing chunk" if augment else "blur only"
+        ),
         "retained_depth_gaps_mm": np.diff([p["center_mm"][1] for p in planes]).tolist(),
         "exclusions": exclusions,
         "evaluation_scope": "same-volume synthetic queries; no cross-donor validation",
