@@ -20,6 +20,10 @@ def summarize(runs: list[Path], output: Path):
             if report.get("pairwise_comparisons")
             else ("learned" if report["learned_features"] else "baseline")
         )
+        if report.get("patch_features"):
+            features = "patch"
+            if report["patch_features"].get("preprocessing") == "paper_v2":
+                features += "_paper"
         if report.get("stack_normalized"):
             features += "_normalized"
         scope = "calibrated" if report["protocol"]["donor_calibrated"] else "independent"

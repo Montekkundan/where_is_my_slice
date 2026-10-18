@@ -1,0 +1,1156 @@
+{
+  "schema_version": 1,
+  "source_revision": "1b67b630cc4e8e03be210d6fb39210b722296902",
+  "learned_features": null,
+  "pairwise_comparisons": false,
+  "patch_features": {
+    "schema_version": 1,
+    "architecture": "paired_patch_cnn_v1",
+    "image_size": 96,
+    "seed": 26018,
+    "selected_epoch": 40,
+    "selection": "Mean validation symmetric pair cross entropy",
+    "temperature": 0.07,
+    "epochs_requested": 150,
+    "history": [
+      {
+        "epoch": 0,
+        "validation": [
+          {
+            "loss": 4.16818904876709,
+            "top1": 0.0
+          },
+          {
+            "loss": 2.548478841781616,
+            "top1": 0.07692307978868484
+          }
+        ],
+        "training_loss": null
+      },
+      {
+        "epoch": 5,
+        "validation": [
+          {
+            "loss": 3.7090611457824707,
+            "top1": 0.01587301678955555
+          },
+          {
+            "loss": 2.759279727935791,
+            "top1": 0.07692307978868484
+          }
+        ],
+        "training_loss": 1.5628670826554298
+      },
+      {
+        "epoch": 10,
+        "validation": [
+          {
+            "loss": 3.3644962310791016,
+            "top1": 0.01587301678955555
+          },
+          {
+            "loss": 2.8725152015686035,
+            "top1": 0.07692307978868484
+          }
+        ],
+        "training_loss": 1.5647626295685768
+      },
+      {
+        "epoch": 15,
+        "validation": [
+          {
+            "loss": 3.245514392852783,
+            "top1": 0.0317460335791111
+          },
+          {
+            "loss": 2.91864013671875,
+            "top1": 0.07692307978868484
+          }
+        ],
+        "training_loss": 1.4299794286489487
+      },
+      {
+        "epoch": 20,
+        "validation": [
+          {
+            "loss": 3.0978245735168457,
+            "top1": 0.01587301678955555
+          },
+          {
+            "loss": 3.0272903442382812,
+            "top1": 0.07692307978868484
+          }
+        ],
+        "training_loss": 1.351548232138157
+      },
+      {
+        "epoch": 25,
+        "validation": [
+          {
+            "loss": 3.052859306335449,
+            "top1": 0.01587301678955555
+          },
+          {
+            "loss": 3.100883960723877,
+            "top1": 0.07692307978868484
+          }
+        ],
+        "training_loss": 1.2009215503931046
+      },
+      {
+        "epoch": 30,
+        "validation": [
+          {
+            "loss": 3.0570054054260254,
+            "top1": 0.01587301678955555
+          },
+          {
+            "loss": 3.201526641845703,
+            "top1": 0.07692307978868484
+          }
+        ],
+        "training_loss": 1.0891542509198189
+      },
+      {
+        "epoch": 35,
+        "validation": [
+          {
+            "loss": 3.0462918281555176,
+            "top1": 0.01587301678955555
+          },
+          {
+            "loss": 3.3674187660217285,
+            "top1": 0.1538461595773697
+          }
+        ],
+        "training_loss": 1.1006275694817305
+      },
+      {
+        "epoch": 40,
+        "validation": [
+          {
+            "loss": 2.9750452041625977,
+            "top1": 0.01587301678955555
+          },
+          {
+            "loss": 2.9528114795684814,
+            "top1": 0.1538461595773697
+          }
+        ],
+        "training_loss": 1.2010086439549923
+      },
+      {
+        "epoch": 45,
+        "validation": [
+          {
+            "loss": 2.9946372509002686,
+            "top1": 0.01587301678955555
+          },
+          {
+            "loss": 3.272327184677124,
+            "top1": 0.1538461595773697
+          }
+        ],
+        "training_loss": 1.1260169707238674
+      },
+      {
+        "epoch": 50,
+        "validation": [
+          {
+            "loss": 2.991743564605713,
+            "top1": 0.01587301678955555
+          },
+          {
+            "loss": 3.4324777126312256,
+            "top1": 0.07692307978868484
+          }
+        ],
+        "training_loss": 1.0897498652338982
+      },
+      {
+        "epoch": 55,
+        "validation": [
+          {
+            "loss": 2.9477181434631348,
+            "top1": 0.01587301678955555
+          },
+          {
+            "loss": 3.313385486602783,
+            "top1": 0.1538461595773697
+          }
+        ],
+        "training_loss": 1.0111887007951736
+      },
+      {
+        "epoch": 60,
+        "validation": [
+          {
+            "loss": 2.9374523162841797,
+            "top1": 0.0317460335791111
+          },
+          {
+            "loss": 3.2289719581604004,
+            "top1": 0.07692307978868484
+          }
+        ],
+        "training_loss": 0.7737828381359577
+      },
+      {
+        "epoch": 65,
+        "validation": [
+          {
+            "loss": 2.9935684204101562,
+            "top1": 0.01587301678955555
+          },
+          {
+            "loss": 3.493403911590576,
+            "top1": 0.07692307978868484
+          }
+        ],
+        "training_loss": 0.8544996902346611
+      },
+      {
+        "epoch": 70,
+        "validation": [
+          {
+            "loss": 3.0221505165100098,
+            "top1": 0.01587301678955555
+          },
+          {
+            "loss": 3.5569684505462646,
+            "top1": 0.07692307978868484
+          }
+        ],
+        "training_loss": 0.9971630945801735
+      },
+      {
+        "epoch": 75,
+        "validation": [
+          {
+            "loss": 2.987652063369751,
+            "top1": 0.01587301678955555
+          },
+          {
+            "loss": 3.069714069366455,
+            "top1": 0.07692307978868484
+          }
+        ],
+        "training_loss": 1.0950716845691204
+      },
+      {
+        "epoch": 80,
+        "validation": [
+          {
+            "loss": 2.99989652633667,
+            "top1": 0.01587301678955555
+          },
+          {
+            "loss": 3.402127504348755,
+            "top1": 0.07692307978868484
+          }
+        ],
+        "training_loss": 0.6694629248231649
+      }
+    ],
+    "training_pairs": [
+      203,
+      52
+    ],
+    "validation_pairs": [
+      63,
+      13
+    ],
+    "batch_sampling": "Alternating contiguous same-donor blocks and random same-donor pairs",
+    "provenance": {
+      "source_revision": "1b67b630cc4e8e03be210d6fb39210b722296902",
+      "donor_calibrated": true,
+      "splits": {
+        "BigBrain": {
+          "train": [
+            "016",
+            "017",
+            "018",
+            "019",
+            "020",
+            "021",
+            "022",
+            "023",
+            "024",
+            "025",
+            "026",
+            "027",
+            "028",
+            "029",
+            "030",
+            "031",
+            "032",
+            "033",
+            "034",
+            "035",
+            "036",
+            "037",
+            "038",
+            "039",
+            "040",
+            "041",
+            "042",
+            "043",
+            "044",
+            "045",
+            "046",
+            "047",
+            "048",
+            "049",
+            "050",
+            "051",
+            "052",
+            "053",
+            "054",
+            "055",
+            "056",
+            "057",
+            "058",
+            "059",
+            "060",
+            "061",
+            "062",
+            "063",
+            "064",
+            "065",
+            "066",
+            "067",
+            "068",
+            "069",
+            "070",
+            "071",
+            "072",
+            "073",
+            "074",
+            "075",
+            "076",
+            "077",
+            "078",
+            "079",
+            "080",
+            "081",
+            "082",
+            "083",
+            "084",
+            "085",
+            "086",
+            "087",
+            "088",
+            "089",
+            "090",
+            "091",
+            "092",
+            "093",
+            "094",
+            "095",
+            "096",
+            "097",
+            "098",
+            "099",
+            "100",
+            "101",
+            "102",
+            "103",
+            "104",
+            "105",
+            "106",
+            "107",
+            "108",
+            "109",
+            "110",
+            "111",
+            "112",
+            "113",
+            "114",
+            "115",
+            "116",
+            "117",
+            "118",
+            "119",
+            "120",
+            "121",
+            "122",
+            "123",
+            "124",
+            "125",
+            "126",
+            "127",
+            "128",
+            "129",
+            "130",
+            "131",
+            "132",
+            "133",
+            "134",
+            "135",
+            "136",
+            "137",
+            "138",
+            "139",
+            "140",
+            "141",
+            "142",
+            "143",
+            "144",
+            "145",
+            "146",
+            "147",
+            "148",
+            "149",
+            "150",
+            "151",
+            "152",
+            "153",
+            "154",
+            "155",
+            "156",
+            "157",
+            "158",
+            "159",
+            "160",
+            "161",
+            "162",
+            "163",
+            "164",
+            "165",
+            "166",
+            "167",
+            "168",
+            "169",
+            "170",
+            "171",
+            "172",
+            "173",
+            "174",
+            "175",
+            "176",
+            "177",
+            "178",
+            "179",
+            "180",
+            "181",
+            "182",
+            "183",
+            "184",
+            "185",
+            "186",
+            "187",
+            "188",
+            "189",
+            "190",
+            "191",
+            "192",
+            "193",
+            "194",
+            "195",
+            "196",
+            "197",
+            "198",
+            "199",
+            "200",
+            "201",
+            "202",
+            "203",
+            "204",
+            "205",
+            "206",
+            "207",
+            "208",
+            "209",
+            "210",
+            "211",
+            "212",
+            "213",
+            "214",
+            "215",
+            "216",
+            "217",
+            "218"
+          ],
+          "validation": [
+            "225",
+            "226",
+            "227",
+            "228",
+            "229",
+            "230",
+            "231",
+            "232",
+            "233",
+            "234",
+            "235",
+            "236",
+            "237",
+            "238",
+            "239",
+            "240",
+            "241",
+            "242",
+            "243",
+            "244",
+            "245",
+            "246",
+            "247",
+            "248",
+            "249",
+            "250",
+            "251",
+            "252",
+            "253",
+            "254",
+            "255",
+            "256",
+            "257",
+            "258",
+            "259",
+            "260",
+            "261",
+            "262",
+            "263",
+            "264",
+            "265",
+            "266",
+            "267",
+            "268",
+            "269",
+            "270",
+            "271",
+            "272",
+            "273",
+            "274",
+            "275",
+            "276",
+            "277",
+            "278",
+            "279",
+            "280",
+            "281",
+            "282",
+            "283",
+            "284",
+            "285",
+            "286",
+            "287"
+          ]
+        },
+        "Allen_labels": {
+          "train": [
+            "002",
+            "003",
+            "004",
+            "005",
+            "007",
+            "008",
+            "009",
+            "010",
+            "011",
+            "012",
+            "013",
+            "014",
+            "015",
+            "016",
+            "017",
+            "018",
+            "019",
+            "020",
+            "021",
+            "022",
+            "023",
+            "025",
+            "027",
+            "028",
+            "029",
+            "030",
+            "031",
+            "032",
+            "033",
+            "035",
+            "036",
+            "037",
+            "038",
+            "039",
+            "040",
+            "041",
+            "042",
+            "043",
+            "044",
+            "045",
+            "046",
+            "048",
+            "049",
+            "050",
+            "051",
+            "052",
+            "053",
+            "054",
+            "055",
+            "056",
+            "057",
+            "058"
+          ],
+          "validation": [
+            "066",
+            "067",
+            "068",
+            "069",
+            "070",
+            "072",
+            "073",
+            "074",
+            "075",
+            "076",
+            "078",
+            "079",
+            "080"
+          ]
+        }
+      },
+      "test_images_used_for_fit_or_selection": false
+    },
+    "limitations": [
+      "Two-dimensional paired-image matching; no pose or reconstruction",
+      "Not a Synth-by-Reg reproduction; testing remains exploratory"
+    ],
+    "weights_sha256": "5c329950b21041acc91b7b1316ebc94eb28ac5326a9d9fab1da434c7529dc245"
+  },
+  "stack_normalized": true,
+  "source": "https://github.com/acasamitjana/SynthByReg",
+  "paper": "https://arxiv.org/abs/2107.14449",
+  "protocol": {
+    "training": "BigBrain+Allen first 60 percent minus support guard",
+    "validation": "Middle 20 percent of training donors with support gaps",
+    "test": "Both donors final 20 percent",
+    "donor_calibrated": true,
+    "guard_sections": 3,
+    "context_radius_sections": 2,
+    "image_size": 96,
+    "stack_normalization": "Observed stack median/IQR; boundary rows excluded",
+    "comparisons": "Paired convolutional descriptors, reciprocal swap gains and local context",
+    "preprocessing": "Publisher affine-aligned images, common canvas retained; tissue-based tear placement",
+    "selection": "Validation macro balanced accuracy; clean validation FPR <= 5 percent",
+    "error_fraction_requested": 0.05,
+    "trials_per_kind": 20,
+    "kinds": [
+      "flip",
+      "damage",
+      "misorder_near",
+      "misorder_far"
+    ],
+    "target": "Recall >=95%, precision >=95%, FPR <=5% for each error kind",
+    "negative_control": "Untouched publisher stack; all-negative baseline also reported",
+    "input": "Nominally ordered affine-aligned images; optional expected MRI per slot"
+  },
+  "selection": {
+    "neighbour_images": {
+      "validation": {
+        "tp": 190,
+        "fp": 255,
+        "fn": 130,
+        "tn": 4865,
+        "accuracy": 0.9292279411764706,
+        "recall": 0.59375,
+        "precision": 0.42696629213483145,
+        "false_positive_rate": 0.0498046875,
+        "balanced_accuracy": 0.77197265625
+      },
+      "by_kind": {
+        "flip": {
+          "tp": 77,
+          "fp": 43,
+          "fn": 3,
+          "tn": 1237,
+          "accuracy": 0.9661764705882353,
+          "recall": 0.9625,
+          "precision": 0.6416666666666667,
+          "false_positive_rate": 0.03359375,
+          "balanced_accuracy": 0.9644531249999999
+        },
+        "damage": {
+          "tp": 32,
+          "fp": 75,
+          "fn": 48,
+          "tn": 1205,
+          "accuracy": 0.9095588235294118,
+          "recall": 0.4,
+          "precision": 0.29906542056074764,
+          "false_positive_rate": 0.05859375,
+          "balanced_accuracy": 0.670703125
+        },
+        "misorder_near": {
+          "tp": 11,
+          "fp": 84,
+          "fn": 69,
+          "tn": 1196,
+          "accuracy": 0.8875,
+          "recall": 0.1375,
+          "precision": 0.11578947368421053,
+          "false_positive_rate": 0.065625,
+          "balanced_accuracy": 0.5359375
+        },
+        "misorder_far": {
+          "tp": 70,
+          "fp": 53,
+          "fn": 10,
+          "tn": 1227,
+          "accuracy": 0.9536764705882353,
+          "recall": 0.875,
+          "precision": 0.5691056910569106,
+          "false_positive_rate": 0.04140625,
+          "balanced_accuracy": 0.916796875
+        }
+      },
+      "regularization": 1.0
+    },
+    "neighbour_images_and_expected_mri": {
+      "validation": {
+        "tp": 179,
+        "fp": 256,
+        "fn": 141,
+        "tn": 4864,
+        "accuracy": 0.9270220588235294,
+        "recall": 0.559375,
+        "precision": 0.4114942528735632,
+        "false_positive_rate": 0.05,
+        "balanced_accuracy": 0.7546875
+      },
+      "by_kind": {
+        "flip": {
+          "tp": 80,
+          "fp": 60,
+          "fn": 0,
+          "tn": 1220,
+          "accuracy": 0.9558823529411765,
+          "recall": 1.0,
+          "precision": 0.5714285714285714,
+          "false_positive_rate": 0.046875,
+          "balanced_accuracy": 0.9765625
+        },
+        "damage": {
+          "tp": 32,
+          "fp": 58,
+          "fn": 48,
+          "tn": 1222,
+          "accuracy": 0.9220588235294118,
+          "recall": 0.4,
+          "precision": 0.35555555555555557,
+          "false_positive_rate": 0.0453125,
+          "balanced_accuracy": 0.6773437499999999
+        },
+        "misorder_near": {
+          "tp": 16,
+          "fp": 74,
+          "fn": 64,
+          "tn": 1206,
+          "accuracy": 0.8985294117647059,
+          "recall": 0.2,
+          "precision": 0.17777777777777778,
+          "false_positive_rate": 0.0578125,
+          "balanced_accuracy": 0.57109375
+        },
+        "misorder_far": {
+          "tp": 51,
+          "fp": 64,
+          "fn": 29,
+          "tn": 1216,
+          "accuracy": 0.9316176470588236,
+          "recall": 0.6375,
+          "precision": 0.4434782608695652,
+          "false_positive_rate": 0.05,
+          "balanced_accuracy": 0.79375
+        }
+      },
+      "regularization": 1.0
+    }
+  },
+  "results": {
+    "BigBrain": {
+      "all_negative_baseline": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 200,
+        "tn": 4760,
+        "accuracy": 0.9596774193548387,
+        "recall": 0.0,
+        "precision": null,
+        "false_positive_rate": 0.0,
+        "balanced_accuracy": 0.5
+      },
+      "actual_error_fraction": 0.04032258064516129,
+      "unique_sections": 66,
+      "evaluated_sections": 62,
+      "section_ids": [
+        "294",
+        "295",
+        "296",
+        "297",
+        "298",
+        "299",
+        "300",
+        "301",
+        "302",
+        "303",
+        "304",
+        "305",
+        "306",
+        "307",
+        "308",
+        "309",
+        "310",
+        "311",
+        "312",
+        "313",
+        "314",
+        "315",
+        "316",
+        "317",
+        "318",
+        "319",
+        "320",
+        "321",
+        "322",
+        "323",
+        "324",
+        "325",
+        "326",
+        "327",
+        "328",
+        "329",
+        "330",
+        "331",
+        "332",
+        "333",
+        "334",
+        "335",
+        "336",
+        "337",
+        "338",
+        "339",
+        "340",
+        "341",
+        "342",
+        "343",
+        "344",
+        "345",
+        "346",
+        "347",
+        "348",
+        "349",
+        "350",
+        "351",
+        "352",
+        "353",
+        "354",
+        "355",
+        "356",
+        "357",
+        "358",
+        "361"
+      ],
+      "methods": {
+        "neighbour_images": {
+          "pooled": {
+            "tp": 155,
+            "fp": 456,
+            "fn": 45,
+            "tn": 4304,
+            "accuracy": 0.898991935483871,
+            "recall": 0.775,
+            "precision": 0.25368248772504093,
+            "false_positive_rate": 0.0957983193277311,
+            "balanced_accuracy": 0.8396008403361344
+          },
+          "by_kind": {
+            "flip": {
+              "tp": 56,
+              "fp": 99,
+              "fn": 4,
+              "tn": 1081,
+              "accuracy": 0.9169354838709678,
+              "recall": 0.9333333333333333,
+              "precision": 0.36129032258064514,
+              "false_positive_rate": 0.08389830508474576,
+              "balanced_accuracy": 0.9247175141242938
+            },
+            "damage": {
+              "tp": 55,
+              "fp": 114,
+              "fn": 5,
+              "tn": 1066,
+              "accuracy": 0.9040322580645161,
+              "recall": 0.9166666666666666,
+              "precision": 0.3254437869822485,
+              "false_positive_rate": 0.09661016949152543,
+              "balanced_accuracy": 0.9100282485875706
+            },
+            "misorder_near": {
+              "tp": 4,
+              "fp": 119,
+              "fn": 36,
+              "tn": 1081,
+              "accuracy": 0.875,
+              "recall": 0.1,
+              "precision": 0.032520325203252036,
+              "false_positive_rate": 0.09916666666666667,
+              "balanced_accuracy": 0.5004166666666667
+            },
+            "misorder_far": {
+              "tp": 40,
+              "fp": 124,
+              "fn": 0,
+              "tn": 1076,
+              "accuracy": 0.9,
+              "recall": 1.0,
+              "precision": 0.24390243902439024,
+              "false_positive_rate": 0.10333333333333333,
+              "balanced_accuracy": 0.9483333333333334
+            }
+          },
+          "untouched_stack_flag_count": 6,
+          "untouched_stack_evaluated_sections": 62,
+          "untouched_stack_flag_rate": 0.0967741935483871,
+          "target_met": false
+        },
+        "neighbour_images_and_expected_mri": {
+          "pooled": {
+            "tp": 157,
+            "fp": 306,
+            "fn": 43,
+            "tn": 4454,
+            "accuracy": 0.9296370967741936,
+            "recall": 0.785,
+            "precision": 0.3390928725701944,
+            "false_positive_rate": 0.06428571428571428,
+            "balanced_accuracy": 0.8603571428571429
+          },
+          "by_kind": {
+            "flip": {
+              "tp": 58,
+              "fp": 77,
+              "fn": 2,
+              "tn": 1103,
+              "accuracy": 0.9362903225806452,
+              "recall": 0.9666666666666667,
+              "precision": 0.42962962962962964,
+              "false_positive_rate": 0.06525423728813559,
+              "balanced_accuracy": 0.9507062146892656
+            },
+            "damage": {
+              "tp": 55,
+              "fp": 74,
+              "fn": 5,
+              "tn": 1106,
+              "accuracy": 0.9362903225806452,
+              "recall": 0.9166666666666666,
+              "precision": 0.4263565891472868,
+              "false_positive_rate": 0.06271186440677966,
+              "balanced_accuracy": 0.9269774011299434
+            },
+            "misorder_near": {
+              "tp": 4,
+              "fp": 77,
+              "fn": 36,
+              "tn": 1123,
+              "accuracy": 0.9088709677419354,
+              "recall": 0.1,
+              "precision": 0.04938271604938271,
+              "false_positive_rate": 0.06416666666666666,
+              "balanced_accuracy": 0.5179166666666667
+            },
+            "misorder_far": {
+              "tp": 40,
+              "fp": 78,
+              "fn": 0,
+              "tn": 1122,
+              "accuracy": 0.9370967741935484,
+              "recall": 1.0,
+              "precision": 0.3389830508474576,
+              "false_positive_rate": 0.065,
+              "balanced_accuracy": 0.9675
+            }
+          },
+          "untouched_stack_flag_count": 4,
+          "untouched_stack_evaluated_sections": 62,
+          "untouched_stack_flag_rate": 0.06451612903225806,
+          "target_met": false
+        }
+      }
+    },
+    "Allen_labels": {
+      "all_negative_baseline": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 120,
+        "tn": 840,
+        "accuracy": 0.875,
+        "recall": 0.0,
+        "precision": null,
+        "false_positive_rate": 0.0,
+        "balanced_accuracy": 0.5
+      },
+      "actual_error_fraction": 0.125,
+      "unique_sections": 16,
+      "evaluated_sections": 12,
+      "section_ids": [
+        "089",
+        "090",
+        "091",
+        "093",
+        "094",
+        "095",
+        "096",
+        "097",
+        "098",
+        "099",
+        "100",
+        "101",
+        "102",
+        "104",
+        "105",
+        "106"
+      ],
+      "methods": {
+        "neighbour_images": {
+          "pooled": {
+            "tp": 77,
+            "fp": 112,
+            "fn": 43,
+            "tn": 728,
+            "accuracy": 0.8385416666666666,
+            "recall": 0.6416666666666667,
+            "precision": 0.4074074074074074,
+            "false_positive_rate": 0.13333333333333333,
+            "balanced_accuracy": 0.7541666666666667
+          },
+          "by_kind": {
+            "flip": {
+              "tp": 20,
+              "fp": 9,
+              "fn": 0,
+              "tn": 211,
+              "accuracy": 0.9625,
+              "recall": 1.0,
+              "precision": 0.6896551724137931,
+              "false_positive_rate": 0.04090909090909091,
+              "balanced_accuracy": 0.9795454545454545
+            },
+            "damage": {
+              "tp": 20,
+              "fp": 38,
+              "fn": 0,
+              "tn": 182,
+              "accuracy": 0.8416666666666667,
+              "recall": 1.0,
+              "precision": 0.3448275862068966,
+              "false_positive_rate": 0.17272727272727273,
+              "balanced_accuracy": 0.9136363636363636
+            },
+            "misorder_near": {
+              "tp": 16,
+              "fp": 41,
+              "fn": 24,
+              "tn": 159,
+              "accuracy": 0.7291666666666666,
+              "recall": 0.4,
+              "precision": 0.2807017543859649,
+              "false_positive_rate": 0.205,
+              "balanced_accuracy": 0.5974999999999999
+            },
+            "misorder_far": {
+              "tp": 21,
+              "fp": 24,
+              "fn": 19,
+              "tn": 176,
+              "accuracy": 0.8208333333333333,
+              "recall": 0.525,
+              "precision": 0.4666666666666667,
+              "false_positive_rate": 0.12,
+              "balanced_accuracy": 0.7024999999999999
+            }
+          },
+          "untouched_stack_flag_count": 3,
+          "untouched_stack_evaluated_sections": 12,
+          "untouched_stack_flag_rate": 0.25,
+          "target_met": false
+        },
+        "neighbour_images_and_expected_mri": {
+          "pooled": {
+            "tp": 75,
+            "fp": 108,
+            "fn": 45,
+            "tn": 732,
+            "accuracy": 0.840625,
+            "recall": 0.625,
+            "precision": 0.4098360655737705,
+            "false_positive_rate": 0.12857142857142856,
+            "balanced_accuracy": 0.7482142857142857
+          },
+          "by_kind": {
+            "flip": {
+              "tp": 20,
+              "fp": 29,
+              "fn": 0,
+              "tn": 191,
+              "accuracy": 0.8791666666666667,
+              "recall": 1.0,
+              "precision": 0.40816326530612246,
+              "false_positive_rate": 0.1318181818181818,
+              "balanced_accuracy": 0.9340909090909091
+            },
+            "damage": {
+              "tp": 20,
+              "fp": 24,
+              "fn": 0,
+              "tn": 196,
+              "accuracy": 0.9,
+              "recall": 1.0,
+              "precision": 0.45454545454545453,
+              "false_positive_rate": 0.10909090909090909,
+              "balanced_accuracy": 0.9454545454545454
+            },
+            "misorder_near": {
+              "tp": 16,
+              "fp": 32,
+              "fn": 24,
+              "tn": 168,
+              "accuracy": 0.7666666666666667,
+              "recall": 0.4,
+              "precision": 0.3333333333333333,
+              "false_positive_rate": 0.16,
+              "balanced_accuracy": 0.62
+            },
+            "misorder_far": {
+              "tp": 19,
+              "fp": 23,
+              "fn": 21,
+              "tn": 177,
+              "accuracy": 0.8166666666666667,
+              "recall": 0.475,
+              "precision": 0.4523809523809524,
+              "false_positive_rate": 0.115,
+              "balanced_accuracy": 0.68
+            }
+          },
+          "untouched_stack_flag_count": 2,
+          "untouched_stack_evaluated_sections": 12,
+          "untouched_stack_flag_rate": 0.16666666666666666,
+          "target_met": false
+        }
+      }
+    }
+  },
+  "limitations": [
+    "Injected errors on real images, not expert-labelled naturally occurring errors",
+    "Repeated trials reuse sections and are not independent subject observations",
+    "Two donors only; independent donor test applies only when donor_calibrated is false",
+    "Publisher affine alignment and paired MRIs already supplied",
+    "Manual landmark files described in the paper are absent from the public release",
+    "Slice ID differences are not converted to millimetres or angle accuracy",
+    "Thresholds are frozen before tests; test findings are exploratory once inspected",
+    "Near swaps exchange adjacent available sections; far swaps span at least 1/4 stack",
+    "Per-stack median/IQR calibration assumes a mostly correct observed stack"
+  ]
+}

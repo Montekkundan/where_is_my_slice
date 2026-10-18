@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import base64
+import hashlib
 import html
 import io
 import json
@@ -31,7 +32,11 @@ def review_errors(
     """Write an image-based review without reading truth or extracting IDs from names."""
     model = json.loads(Path(model_path).read_text())
     contract = model.get("feature_contract")
-    if contract not in ("stack_error_features_v3", "stack_error_pairwise_v1"):
+    if contract not in (
+        "stack_error_features_v3",
+        "stack_error_pairwise_v1",
+        "stack_error_patch_v1",
+    ):
         raise ValueError("Unknown detector feature contract")
     if model["expected_mri_required"] and mri_sections is None:
         raise ValueError("This detector requires the expected MRI plane for each input slot")
@@ -71,6 +76,20 @@ def review_errors(
         from .pairwise_qa import PairwiseFeatures
 
         measurements = np.column_stack((measurements, PairwiseFeatures(mri).measure(images)))
+    if contract == "stack_error_patch_v1":
+        from .patch_matching import PatchErrorFeatures, PatchMatcher
+
+        weights = Path(model_path).parent / "patch_encoder.safetensors"
+        if hashlib.sha256(weights.read_bytes()).hexdigest() != model.get("patch_weights_sha256"):
+            raise ValueError("Detector and patch encoder weights differ")
+        patch_matcher = PatchMatcher.load(weights)
+        if mri is not None:
+            extra = PatchErrorFeatures(patch_matcher, mri).measure(images)
+        else:
+            desc = patch_matcher.encode(images, "histology")
+            flipped = patch_matcher.encode(images[:, :, ::-1], "histology")
+            extra = context_features(desc, flipped)
+        measurements = np.column_stack((measurements, extra))
     if model["learned_features"]:
         if encoder is None:
             from .encoders import DinoEncoder

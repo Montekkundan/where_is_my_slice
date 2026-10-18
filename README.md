@@ -19,6 +19,10 @@ slicegps fetch-sbr --root data/synthbyreg
 python scripts/evaluate_errors.py --output outputs/errors
 python scripts/evaluate_errors.py --pairwise --donor-calibrated --stack-normalized \
   --output outputs/errors-paired
+python scripts/train_patch_matcher.py --donor-calibrated --preprocessing paper_v2 \
+  --output outputs/patch-matcher
+python scripts/evaluate_errors.py --donor-calibrated --stack-normalized \
+  --patch-model outputs/patch-matcher/patch_encoder.safetensors --output outputs/errors-learned
 pytest -q
 ```
 
@@ -50,10 +54,15 @@ have only 12 Allen test sections. Repeated trials reuse sections.
 | Images + stack calibration | Unseen Allen | 84.1% | 10.2% |
 | Paired comparisons + stack calibration, trained on both donors | BigBrain | 74.5% | 4.7% |
 | Paired comparisons + stack calibration, trained on both donors | Allen | 85.8% | 7.5% |
+| Trained convolutional matcher + stack calibration, both donors | BigBrain | 79.5% | 7.1% |
+| Trained convolutional matcher + stack calibration, both donors | Allen | 66.7% | 10.7% |
 
 No method meets the target across error types and donors. The calibrated paired
 model detects only 17.5% of nearby BigBrain swaps. DINOv2 features did not improve
-the image/MRI baseline. Uncalibrated models can flag every Allen section; that is
+the image/MRI baseline. The convolutional matcher uses separate histology/MRI
+encoders, adjacent training negatives and clean validation pairs for checkpoint
+selection. Its paper-background variant also misses most nearby BigBrain swaps.
+Uncalibrated models can flag every Allen section; that is
 a failure. Calling every section clean already gives about 95–96% raw accuracy
 in the independent tests, so recall and false alarms are reported together.
 Stack calibration uses the observed stack's median and interquartile range,

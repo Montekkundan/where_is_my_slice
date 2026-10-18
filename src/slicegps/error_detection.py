@@ -28,7 +28,7 @@ def _images(value, minimum=5):
     return images
 
 
-def canonical_histology(images: np.ndarray) -> np.ndarray:
+def canonical_histology(images: np.ndarray, *, paper_fraction: float = 0.2) -> np.ndarray:
     """Remove bright mounting paper using pixels only, retaining the common canvas.
 
     A broad near-white region identifies paper-backed scans. Dark scanner frame
@@ -40,7 +40,7 @@ def canonical_histology(images: np.ndarray) -> np.ndarray:
     for image in images:
         low, high = float(image.min()), float(image.max())
         scaled = (image - low) / (high - low)
-        if np.mean(scaled > 0.9) > 0.2:
+        if np.mean(scaled > 0.9) > paper_fraction:
             smooth = gaussian_filter(scaled, 0.6)
             mask = (smooth > 0.12) & (smooth < 0.86)
             regions, count = label(mask)

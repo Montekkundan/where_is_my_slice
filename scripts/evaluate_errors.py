@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import json
 from pathlib import Path
 
@@ -26,7 +27,14 @@ from slicegps.sbr import SBR_REVISION, fetch_sbr, load_sbr
 
 
 def make_examples(
-    histology, mri, trials, seed, encoder=None, pairwise=False, stack_normalized=False
+    histology,
+    mri,
+    trials,
+    seed,
+    encoder=None,
+    pairwise=False,
+    stack_normalized=False,
+    patch_encoder=None,
 ):
     """Same seeds apply to each method. Truth is consumed only after feature extraction."""
     rows, labels, kinds, trial_ids, slots = [], [], [], [], []
@@ -38,6 +46,11 @@ def make_examples(
         from slicegps.pairwise_qa import PairwiseFeatures
 
         comparator = PairwiseFeatures(mri)
+    patch_comparator = None
+    if patch_encoder is not None:
+        from slicegps.patch_matching import PatchErrorFeatures
+
+        patch_comparator = PatchErrorFeatures(patch_encoder, mri)
     if encoder is not None:
         bank = np.concatenate((histology, histology[:, :, ::-1], mri))
         print(f"Encoding {len(bank)} pinned DINOv2 images", flush=True)
@@ -63,6 +76,8 @@ def make_examples(
             measurements = error_features(observed, mri, cache=measurement_cache)
             if comparator is not None:
                 measurements = np.column_stack((measurements, comparator.measure(observed)))
+            if patch_comparator is not None:
+                measurements = np.column_stack((measurements, patch_comparator.measure(observed)))
             if encoder is not None:
                 desc, flipped = embeddings(observed), embeddings(observed[:, :, ::-1])
                 extra = np.column_stack(
@@ -96,6 +111,8 @@ def subset_features(x, paired):
     indices = [*range(7), *range(9, 16), *range(18, 25), 27, 28, 29]
     if x.shape[1] == 39:
         indices += list(range(30, 37))
+    if x.shape[1] == 45:
+        indices += list(range(38, 45))
     return x[:, indices]
 
 
@@ -115,14 +132,15 @@ def run(
     donor_calibrated: bool = False,
     pairwise: bool = False,
     stack_normalized: bool = False,
+    patch_encoder=None,
 ):
     if output.exists():
         raise FileExistsError(output)
     if trials < 2:
         raise ValueError("At least two corruption trials are required")
     manifest = fetch_sbr(root) if fetch else json.loads((root / "sources.json").read_text())
-    if pairwise and encoder is not None:
-        raise ValueError("Choose either pairwise comparisons or learned DINO features")
+    if sum((pairwise, encoder is not None, patch_encoder is not None)) > 1:
+        raise ValueError("Choose one feature alternative")
     image_size = 192 if pairwise else 96
     hist, mri, ids = load_sbr(root, "BigBrain", size=image_size)
     split = spatial_splits(len(hist))
@@ -137,6 +155,18 @@ def run(
         for dataset, data in datasets.items()
     }
     write_json(output / "split.json", split_ids)
+    if patch_encoder is not None:
+        expected = {
+            donor: {key: value for key, value in values.items() if key in ("train", "validation")}
+            for donor, values in split_ids.items()
+        }
+        provenance = patch_encoder.metadata["provenance"]
+        if (
+            provenance.get("source_revision") != SBR_REVISION
+            or provenance.get("splits") != expected
+        ):
+            raise ValueError("Patch encoder training split differs from this benchmark")
+        patch_encoder.save(output / "patch_encoder.safetensors")
     examples = {}
     for name, seed in (("train", 48101), ("validation", 48201)):
         parts = []
@@ -152,6 +182,7 @@ def run(
                     encoder,
                     pairwise,
                     stack_normalized,
+                    patch_encoder,
                 )
             )
         examples[name] = tuple(np.concatenate([part[i] for part in parts]) for i in range(5))
@@ -173,11 +204,21 @@ def run(
         model.update(
             threshold=threshold,
             expected_mri_required=paired,
-            feature_contract="stack_error_pairwise_v1"
-            if paired and pairwise
-            else "stack_error_features_v3",
+            feature_contract=(
+                "stack_error_patch_v1"
+                if patch_encoder is not None
+                else (
+                    "stack_error_pairwise_v1" if paired and pairwise else "stack_error_features_v3"
+                )
+            ),
             image_size=image_size,
             stack_normalized=stack_normalized,
+            patch_features=patch_encoder is not None,
+            patch_weights_sha256=(
+                hashlib.sha256((output / "patch_encoder.safetensors").read_bytes()).hexdigest()
+                if patch_encoder is not None
+                else None
+            ),
             learned_features=encoder is not None,
             training_dataset="BigBrain+Allen" if donor_calibrated else "BigBrain",
             source_revision=SBR_REVISION,
@@ -203,7 +244,7 @@ def run(
             h, t, section_ids = load_sbr(root, dataset, size=image_size)
         print(f"Testing {dataset}: {len(h)} unique sections", flush=True)
         x, truth, kinds, trial_ids, slots = make_examples(
-            h, t, trials, 48301, encoder, pairwise, stack_normalized
+            h, t, trials, 48301, encoder, pairwise, stack_normalized, patch_encoder
         )
         observed = {}
         for name, model in models.items():
@@ -216,6 +257,12 @@ def run(
 
                 clean_measurements = np.column_stack(
                     (clean_measurements, PairwiseFeatures(t).measure(h))
+                )
+            if patch_encoder is not None:
+                from slicegps.patch_matching import PatchErrorFeatures
+
+                clean_measurements = np.column_stack(
+                    (clean_measurements, PatchErrorFeatures(patch_encoder, t).measure(h))
                 )
             if encoder is not None:
                 desc = encoder.encode(h, pooling="spatial")
@@ -280,6 +327,7 @@ def run(
         "source_revision": SBR_REVISION,
         "learned_features": encoder.metadata if encoder is not None else None,
         "pairwise_comparisons": pairwise,
+        "patch_features": patch_encoder.metadata if patch_encoder is not None else None,
         "stack_normalized": stack_normalized,
         "source": manifest["source"],
         "paper": manifest["paper"],
@@ -299,9 +347,15 @@ def run(
             "stack_normalization": "Observed stack median/IQR; boundary rows excluded"
             if stack_normalized
             else "None",
-            "comparisons": "Self-similarity, NMI and reciprocal swap gains"
-            if pairwise
-            else "Baseline local context",
+            "comparisons": (
+                "Paired convolutional descriptors, reciprocal swap gains and local context"
+                if patch_encoder is not None
+                else (
+                    "Self-similarity, NMI and reciprocal swap gains"
+                    if pairwise
+                    else "Baseline local context"
+                )
+            ),
             "preprocessing": (
                 "Publisher affine-aligned images, common canvas retained; "
                 "tissue-based tear placement"
@@ -344,6 +398,7 @@ if __name__ == "__main__":
     methods = parser.add_mutually_exclusive_group()
     methods.add_argument("--learned", action="store_true")
     methods.add_argument("--pairwise", action="store_true")
+    methods.add_argument("--patch-model", type=Path)
     parser.add_argument("--donor-calibrated", action="store_true")
     parser.add_argument("--stack-normalized", action="store_true")
     args = parser.parse_args()
@@ -352,6 +407,11 @@ if __name__ == "__main__":
         from slicegps.encoders import DinoEncoder
 
         encoder = DinoEncoder(Path("data/models"), device="auto", batch_size=8)
+    patch_encoder = None
+    if args.patch_model:
+        from slicegps.patch_matching import PatchMatcher
+
+        patch_encoder = PatchMatcher.load(args.patch_model)
     run(
         args.root,
         args.output,
@@ -361,4 +421,5 @@ if __name__ == "__main__":
         args.donor_calibrated,
         args.pairwise,
         args.stack_normalized,
+        patch_encoder,
     )
