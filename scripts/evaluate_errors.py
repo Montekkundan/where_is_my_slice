@@ -143,6 +143,7 @@ def run(
     stack_normalized: bool = False,
     patch_encoder=None,
     sequence=False,
+    nonlinear=False,
 ):
     if output.exists():
         raise FileExistsError(output)
@@ -203,8 +204,16 @@ def run(
     for paired in (False, True):
         name = "neighbour_images_and_expected_mri" if paired else "neighbour_images"
         candidates = []
-        for regularization in (0.001, 0.01, 0.1, 1.0):
-            model = fit_detector(subset_features(x_train, paired), y_train, regularization)
+        if nonlinear:
+            from slicegps.error_mlp import fit_mlp_detectors
+
+            alternatives = fit_mlp_detectors(subset_features(x_train, paired), y_train)
+        else:
+            alternatives = [
+                fit_detector(subset_features(x_train, paired), y_train, regularization)
+                for regularization in (0.001, 0.01, 0.1, 1.0)
+            ]
+        for model in alternatives:
             scores = detector_scores(subset_features(x_val, paired), model)
             threshold, measured = select_threshold(scores, y_val, maximum_fpr=0.05)
             by_kind = metrics_by_kind(y_val, scores > threshold, kinds_val)
@@ -245,6 +254,7 @@ def run(
             "validation": measured,
             "by_kind": by_kind,
             "regularization": model["regularization"],
+            "epochs": model.get("epochs"),
         }
         write_json(output / f"{name}.json", model)
     # Models and thresholds are frozen before either test set is evaluated.
@@ -348,6 +358,7 @@ def run(
         "learned_features": encoder.metadata if encoder is not None else None,
         "pairwise_comparisons": pairwise,
         "sequence_features": sequence,
+        "nonlinear_classifier": nonlinear,
         "patch_features": patch_encoder.metadata if patch_encoder is not None else None,
         "stack_normalized": stack_normalized,
         "source": manifest["source"],
@@ -427,6 +438,7 @@ if __name__ == "__main__":
     methods.add_argument("--sequence", action="store_true")
     parser.add_argument("--donor-calibrated", action="store_true")
     parser.add_argument("--stack-normalized", action="store_true")
+    parser.add_argument("--mlp-head", action="store_true")
     args = parser.parse_args()
     encoder = None
     if args.learned:
@@ -449,4 +461,5 @@ if __name__ == "__main__":
         args.stack_normalized,
         patch_encoder,
         args.sequence,
+        args.mlp_head,
     )

@@ -323,6 +323,19 @@ def detector_scores(x: np.ndarray, model: dict) -> np.ndarray:
     if x.ndim != 2 or x.shape[1:] != center.shape or not np.isfinite(x).all():
         raise ValueError("Detector feature contract mismatch")
     z = np.clip((x - center) / scale, -10, 10)
+    if model.get("classifier") == "tanh_mlp_v1":
+        for i, layer in enumerate(model["layers"]):
+            weight, bias = np.asarray(layer["weight"]), np.asarray(layer["bias"])
+            if weight.ndim != 2 or weight.shape != (len(bias), z.shape[1]):
+                raise ValueError("Nonlinear detector layer contract mismatch")
+            z = z @ weight.T + bias
+            if i < len(model["layers"]) - 1:
+                z = np.tanh(z)
+        if z.shape[1] != 1 or not np.isfinite(z).all():
+            raise ValueError("Invalid nonlinear detector output")
+        return z[:, 0]
+    if model.get("classifier") not in (None, "quadratic_logistic_v1"):
+        raise ValueError("Unknown detector classifier")
     return np.column_stack((z, z * z, np.ones(len(x)))) @ np.asarray(model["coefficients"])
 
 

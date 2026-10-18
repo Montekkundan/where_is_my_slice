@@ -26,6 +26,8 @@ def summarize(runs: list[Path], output: Path):
                 features += "_paper"
         if report.get("sequence_features"):
             features = "sequence"
+        if report.get("nonlinear_classifier"):
+            features += "_mlp"
         if report.get("stack_normalized"):
             features += "_normalized"
         scope = "calibrated" if report["protocol"]["donor_calibrated"] else "independent"
