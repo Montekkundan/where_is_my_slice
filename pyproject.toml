@@ -1,0 +1,27 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "slicegps"
+version = "0.1.0"
+description = "Geometry-first histology slice localization and block-aware data preparation"
+requires-python = ">=3.12"
+dependencies = ["numpy>=2.0", "scipy>=1.13", "nibabel>=5.2", "pillow>=10.4"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.9"]
+
+[project.scripts]
+slicegps = "slicegps.cli:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+extend-exclude = ["._*"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B"]
+

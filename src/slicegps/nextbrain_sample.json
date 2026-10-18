@@ -1,0 +1,133 @@
+{
+  "repository": "https://github.com/UCL/NextBrain-Case-4",
+  "revision": "7cac312e766d603e82928845538f2a2996ec38cb",
+  "download_total_bytes": 37182561,
+  "files": [
+    {
+      "path": "P85-18/block2slab_mapping.csv",
+      "url": "https://raw.githubusercontent.com/UCL/NextBrain-Case-4/7cac312e766d603e82928845538f2a2996ec38cb/P85-18/block2slab_mapping.csv",
+      "size_bytes": 340,
+      "sha256": "99bc1fed67b3bb1b51745849e7215994dfbea63c2302a569a9d229fd6afbef84",
+      "git_blob_sha": "20e95813329e0d7c6fe73c52e954f40ef8ca1d5e"
+    },
+    {
+      "path": "P85-18/histology/01/matrix.txt",
+      "url": "https://raw.githubusercontent.com/UCL/NextBrain-Case-4/7cac312e766d603e82928845538f2a2996ec38cb/P85-18/histology/01/matrix.txt",
+      "size_bytes": 267,
+      "sha256": "40a83d03593b7e4102d38f9dd02345fe5b50c3f778dec7d4a48bb3ba3e54717a",
+      "git_blob_sha": "326d2ffc505b921658d077615d8d3889717dd391"
+    },
+    {
+      "path": "P85-18/histology/01/slices_HE/slice_00.jpg",
+      "url": "https://raw.githubusercontent.com/UCL/NextBrain-Case-4/7cac312e766d603e82928845538f2a2996ec38cb/P85-18/histology/01/slices_HE/slice_00.jpg",
+      "size_bytes": 53887,
+      "sha256": "8794392840778e1b85ed72f4e987bdbb21341afdfe52151db560fb9086c674d2",
+      "git_blob_sha": "6a8f1f8662a57d6bf780c78a969ffa29182ccad5"
+    },
+    {
+      "path": "P85-18/histology/01/slices_MRI/slice_00.jpg",
+      "url": "https://raw.githubusercontent.com/UCL/NextBrain-Case-4/7cac312e766d603e82928845538f2a2996ec38cb/P85-18/histology/01/slices_MRI/slice_00.jpg",
+      "size_bytes": 34155,
+      "sha256": "64c6f4c8c3d50097bdd6ca9a9ab960604d42c15a37d1ccd4d7619430bfea7306",
+      "git_blob_sha": "9361e9f6cec732ffc3b044c0c201786057627aad"
+    },
+    {
+      "path": "P85-18/histology/07/matrix.txt",
+      "url": "https://raw.githubusercontent.com/UCL/NextBrain-Case-4/7cac312e766d603e82928845538f2a2996ec38cb/P85-18/histology/07/matrix.txt",
+      "size_bytes": 258,
+      "sha256": "451f23aba62e717d2f3dcabd5be8f0dda85e6e8f5a32c49494086ec73b9a7da2",
+      "git_blob_sha": "94120f43e3ceef84021db4ae72cfb35b62732eeb"
+    },
+    {
+      "path": "P85-18/histology/07/slices_HE/slice_00.jpg",
+      "url": "https://raw.githubusercontent.com/UCL/NextBrain-Case-4/7cac312e766d603e82928845538f2a2996ec38cb/P85-18/histology/07/slices_HE/slice_00.jpg",
+      "size_bytes": 7310,
+      "sha256": "1781a391bc2998502c3f493681f9e3798437e4ea3dd2defe863f8c312ab10365",
+      "git_blob_sha": "4383094dc64ef95354413d75e2fe9f17169640eb"
+    },
+    {
+      "path": "P85-18/histology/07/slices_MRI/slice_00.jpg",
+      "url": "https://raw.githubusercontent.com/UCL/NextBrain-Case-4/7cac312e766d603e82928845538f2a2996ec38cb/P85-18/histology/07/slices_MRI/slice_00.jpg",
+      "size_bytes": 4259,
+      "sha256": "fadda84aaf37fb9e5895e28c882ee66b0f5b117cc50c2464ea3996ec17550987",
+      "git_blob_sha": "289dcec4c682a1974ed21998c3558cc99096f3f3"
+    },
+    {
+      "path": "P85-18/histology/41/matrix.txt",
+      "url": "https://raw.githubusercontent.com/UCL/NextBrain-Case-4/7cac312e766d603e82928845538f2a2996ec38cb/P85-18/histology/41/matrix.txt",
+      "size_bytes": 253,
+      "sha256": "f05bc786efd7da14f256a2c3a177258da90d976264e643fc7a464c8dac91ce35",
+      "git_blob_sha": "99d0add6a0d0628dee817f3388ff11ea6ba3437c"
+    },
+    {
+      "path": "P85-18/histology/41/slices_HE/slice_00.jpg",
+      "url": "https://raw.githubusercontent.com/UCL/NextBrain-Case-4/7cac312e766d603e82928845538f2a2996ec38cb/P85-18/histology/41/slices_HE/slice_00.jpg",
+      "size_bytes": 17787,
+      "sha256": "daf631be3187f7692bcb5ee6a9ef13d9ad7acf84506a5c9aae95903a185a6e00",
+      "git_blob_sha": "00f6891f9edf7c6d3aeee316c99ca2302752ffe2"
+    },
+    {
+      "path": "P85-18/histology/41/slices_MRI/slice_00.jpg",
+      "url": "https://raw.githubusercontent.com/UCL/NextBrain-Case-4/7cac312e766d603e82928845538f2a2996ec38cb/P85-18/histology/41/slices_MRI/slice_00.jpg",
+      "size_bytes": 14906,
+      "sha256": "212db81f97587c0b57bc9a4f4546d0dccbc5f401faa9bf8ad288dd3467ee6a2b",
+      "git_blob_sha": "6178aa08495aedc06287e7fc4a2d7154d5cfb21e"
+    },
+    {
+      "path": "P85-18/histologyDimensionsKey.json",
+      "url": "https://raw.githubusercontent.com/UCL/NextBrain-Case-4/7cac312e766d603e82928845538f2a2996ec38cb/P85-18/histologyDimensionsKey.json",
+      "size_bytes": 4886,
+      "sha256": "5d8f58cb40531846f05e1c165755847229bbb5b2593be802051a93804239fcc6",
+      "git_blob_sha": "53b949cb17fd0ea706d2394e3bd6d3f1a49c03d9"
+    },
+    {
+      "path": "P85-18/histology_blocks/27/HE.nii.gz",
+      "url": "https://raw.githubusercontent.com/UCL/NextBrain-Case-4/7cac312e766d603e82928845538f2a2996ec38cb/P85-18/histology_blocks/27/HE.nii.gz",
+      "size_bytes": 14416748,
+      "sha256": "005939974e600b0375092e80543cc74f5a8bff7249185d64ee8c6c7aa163c612",
+      "git_blob_sha": "75065be6899fbd293997fbc7259a2bfd0b936f7c"
+    },
+    {
+      "path": "P85-18/histology_blocks/4/HE.nii.gz",
+      "url": "https://raw.githubusercontent.com/UCL/NextBrain-Case-4/7cac312e766d603e82928845538f2a2996ec38cb/P85-18/histology_blocks/4/HE.nii.gz",
+      "size_bytes": 12030513,
+      "sha256": "7a62ccd7d6140704dd16feb4eb965167da1d056f1fb8d9d84d8da6cccfe8612e",
+      "git_blob_sha": "256e3fb6c432c252e7275c07710c5c1fe28d0a29"
+    },
+    {
+      "path": "P85-18/histology_blocks/7/HE.nii.gz",
+      "url": "https://raw.githubusercontent.com/UCL/NextBrain-Case-4/7cac312e766d603e82928845538f2a2996ec38cb/P85-18/histology_blocks/7/HE.nii.gz",
+      "size_bytes": 2137921,
+      "sha256": "1a1abbb792f93d14404dfc35e2bda8e9bab517461b2a46cbc2aa7fba13f12112",
+      "git_blob_sha": "523d3520f77e90ed2cd475f662b9c0f3628297e2"
+    },
+    {
+      "path": "P85-18/mriDimensionsKey.json",
+      "url": "https://raw.githubusercontent.com/UCL/NextBrain-Case-4/7cac312e766d603e82928845538f2a2996ec38cb/P85-18/mriDimensionsKey.json",
+      "size_bytes": 676,
+      "sha256": "77601457e687464a0b67744d94bb1d714ab71829714f696f18dadf81dc4e1749",
+      "git_blob_sha": "b29354fdb242e5a2f17b484892757ea10e481c29"
+    },
+    {
+      "path": "P85-18/mri_rotated/matrices/block_01.txt",
+      "url": "https://raw.githubusercontent.com/UCL/NextBrain-Case-4/7cac312e766d603e82928845538f2a2996ec38cb/P85-18/mri_rotated/matrices/block_01.txt",
+      "size_bytes": 257,
+      "sha256": "a8b628bf5cc33b44e847c592fdd3017cbf59f11ffa0dc423a3b73a04410812cb",
+      "git_blob_sha": "ba67e0c3318a2df39c7992ff5aac379d60f5e230"
+    },
+    {
+      "path": "P85-18/mri_rotated/matrices_hr/block_01.txt",
+      "url": "https://raw.githubusercontent.com/UCL/NextBrain-Case-4/7cac312e766d603e82928845538f2a2996ec38cb/P85-18/mri_rotated/matrices_hr/block_01.txt",
+      "size_bytes": 249,
+      "sha256": "84085e62be16701e7b8adbfd25faf5cb2a0c0345f4e30e38a85a6095a7dc57f6",
+      "git_blob_sha": "916998fa02c3472beba8366ca8c0d48f264c940e"
+    },
+    {
+      "path": "P85-18/mri_rotated/mri.nii.gz",
+      "url": "https://raw.githubusercontent.com/UCL/NextBrain-Case-4/7cac312e766d603e82928845538f2a2996ec38cb/P85-18/mri_rotated/mri.nii.gz",
+      "size_bytes": 8457889,
+      "sha256": "fbc59ecfe64c39a1182ddf98621a5fe34dee58ff710338ffe8840a15a2b88833",
+      "git_blob_sha": "47050e8923c911ee883622c56af053b186692d7b"
+    }
+  ]
+}

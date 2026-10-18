@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+data/
+outputs/
+dist/
+*.egg-info/
+.DS_Store
+._*
+models/
+*.pt
+*.pth
+*.safetensors

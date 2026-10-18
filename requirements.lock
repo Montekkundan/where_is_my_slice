@@ -1,0 +1,11 @@
+iniconfig==2.3.1
+nibabel==5.4.2
+numpy==2.5.4
+packaging==26.3
+pillow==13.0.0
+pluggy==1.7.0
+pygments==2.21.0
+pytest==9.1.1
+ruff==0.17.1
+scipy==1.18.1
+typing-extensions==4.16.0
