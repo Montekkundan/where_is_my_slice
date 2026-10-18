@@ -66,3 +66,23 @@ def test_missing_mri_and_wrong_contract_are_explicit(tmp_path):
     model_path.write_text(json.dumps(model))
     with pytest.raises(ValueError, match="contract"):
         review_errors(model_path, paths, tmp_path / "unknown")
+
+
+def test_float_tiff_transport_matches_png_features(tmp_path):
+    model, paths = fixture(tmp_path)
+    float_paths = []
+    for path in paths:
+        with Image.open(path) as image:
+            values = (
+                np.asarray(image.resize((96, 96), Image.Resampling.BILINEAR), dtype=np.float32)
+                / 255
+            )
+        target = path.with_suffix(".tiff")
+        Image.fromarray(values).save(target)
+        float_paths.append(target)
+    png = review_errors(model, paths, tmp_path / "png")
+    tiff = review_errors(model, float_paths, tmp_path / "tiff")
+    assert png["flagged_indices"] == tiff["flagged_indices"]
+    np.testing.assert_allclose(
+        [r["score"] for r in png["sections"]], [r["score"] for r in tiff["sections"]], atol=1e-6
+    )

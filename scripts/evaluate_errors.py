@@ -228,6 +228,8 @@ def run(
                     )
             print(dataset, name, json.dumps(observed[name]["pooled"]), flush=True)
         results[dataset] = {
+            "all_negative_baseline": classification_metrics(truth, np.zeros_like(truth)),
+            "actual_error_fraction": float(truth.mean()),
             "unique_sections": len(h),
             "evaluated_sections": len(h) - 4,
             "section_ids": section_ids,

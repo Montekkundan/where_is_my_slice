@@ -13,6 +13,7 @@ from PIL import Image
 
 from .data import write_json
 from .error_detection import context_features, detector_scores, error_features
+from .retrieval import _prepare
 
 
 def review_errors(
@@ -40,13 +41,13 @@ def review_errors(
         values = []
         for path in paths:
             with Image.open(path) as image:
-                values.append(
-                    np.asarray(
-                        image.convert("L").resize((96, 96), Image.Resampling.BILINEAR),
-                        dtype=np.float32,
-                    )
-                    / 255
-                )
+                if image.mode in ("F", "I", "I;16"):
+                    # Preserve scientific TIFF ranges; conversion to L clips float pixels.
+                    resized = image.convert("F").resize((96, 96), Image.Resampling.BILINEAR)
+                    values.append(np.asarray(resized, dtype=np.float32))
+                else:
+                    resized = image.convert("L").resize((96, 96), Image.Resampling.BILINEAR)
+                    values.append(np.asarray(resized, dtype=np.float32) / 255)
         return np.stack(values)
 
     images = pixels(sections)
@@ -89,7 +90,9 @@ def review_errors(
             }
         )
         stream = io.BytesIO()
-        Image.fromarray(np.rint(image * 255).astype(np.uint8)).save(stream, format="PNG")
+        Image.fromarray(np.rint(_prepare(image)[0] * 255).astype(np.uint8)).save(
+            stream, format="PNG"
+        )
         data = base64.b64encode(stream.getvalue()).decode()
         status = rows[-1]["status"]
         cards.append(

@@ -1,0 +1,593 @@
+{
+  "schema_version": 1,
+  "source_revision": "1b67b630cc4e8e03be210d6fb39210b722296902",
+  "learned_features": {
+    "model_id": "facebook/dinov2-small",
+    "model_revision": "ed25f3a31f01632728cabb09d1542f84ab7b0056",
+    "preprocessing": {
+      "grayscale_scaling": "border foreground; 1st/99th percentiles; min/max fallback",
+      "foreground_definition": "absolute difference from median border > 0.05 * image range",
+      "rgb_conversion": "repeat grayscale in RGB; round scaled values to uint8 0..255",
+      "do_resize": true,
+      "size": {
+        "shortest_edge": 256
+      },
+      "resample": 3,
+      "resample_name": "PIL bicubic",
+      "do_center_crop": true,
+      "crop_size": {
+        "height": 224,
+        "width": 224
+      },
+      "do_rescale": true,
+      "rescale_factor": 0.00392156862745098,
+      "do_normalize": true,
+      "image_mean": [
+        0.485,
+        0.456,
+        0.406
+      ],
+      "image_std": [
+        0.229,
+        0.224,
+        0.225
+      ],
+      "do_convert_rgb": true,
+      "use_fast": false
+    },
+    "pooling": "spatial",
+    "spatial_pooling": "adaptive average 16x16 patch grid to 4x4; row-major cells",
+    "normalization": "L2 per image",
+    "implementation_version": 1,
+    "feature_fingerprint": "6d27d8ab700f668d07e01a9e41fbc82bb34f3d9d4ed6ab14c618520c85fc6599",
+    "license": "Apache-2.0",
+    "trust_remote_code": false,
+    "weights_format": "safetensors",
+    "cache_dir": "/Volumes/Alpha/where_is_my_slice/data/models",
+    "device_requested": "auto",
+    "device_used": "mps",
+    "cpu_fallback_reason": null,
+    "batch_size": 8,
+    "package_versions": {
+      "torch": "2.14.1",
+      "transformers": "5.20.1",
+      "Pillow": "13.0.0",
+      "numpy": "2.5.4"
+    },
+    "training": "none; frozen pretrained model in eval/inference mode",
+    "limitation": "ImageNet center crop may discard peripheral anatomy; no donor fine-tuning"
+  },
+  "source": "https://github.com/acasamitjana/SynthByReg",
+  "paper": "https://arxiv.org/abs/2107.14449",
+  "protocol": {
+    "training": "BigBrain+Allen first 60 percent minus support guard",
+    "validation": "Middle 20 percent of training donors with support gaps",
+    "test": "Both donors final 20 percent",
+    "donor_calibrated": true,
+    "guard_sections": 3,
+    "context_radius_sections": 2,
+    "image_size": 96,
+    "preprocessing": "Publisher affine-aligned images, common canvas retained; tissue-based tear placement",
+    "selection": "Validation macro balanced accuracy; clean validation FPR <= 5 percent",
+    "error_fraction_requested": 0.05,
+    "trials_per_kind": 20,
+    "kinds": [
+      "flip",
+      "damage",
+      "misorder_near",
+      "misorder_far"
+    ],
+    "target": "Recall >=95%, precision >=95%, FPR <=5% for each error kind",
+    "negative_control": "Untouched publisher stack; all-negative baseline also reported",
+    "input": "Nominally ordered affine-aligned images; optional expected MRI per slot",
+    "postprocessing_note": "All-negative baseline derived from recorded confusion counts"
+  },
+  "selection": {
+    "neighbour_images": {
+      "validation": {
+        "tp": 149,
+        "fp": 215,
+        "fn": 171,
+        "tn": 4905,
+        "accuracy": 0.9290441176470589,
+        "recall": 0.465625,
+        "precision": 0.40934065934065933,
+        "false_positive_rate": 0.0419921875,
+        "balanced_accuracy": 0.71181640625
+      },
+      "by_kind": {
+        "flip": {
+          "tp": 65,
+          "fp": 60,
+          "fn": 15,
+          "tn": 1220,
+          "accuracy": 0.9448529411764706,
+          "recall": 0.8125,
+          "precision": 0.52,
+          "false_positive_rate": 0.046875,
+          "balanced_accuracy": 0.8828125
+        },
+        "damage": {
+          "tp": 56,
+          "fp": 47,
+          "fn": 24,
+          "tn": 1233,
+          "accuracy": 0.9477941176470588,
+          "recall": 0.7,
+          "precision": 0.5436893203883495,
+          "false_positive_rate": 0.03671875,
+          "balanced_accuracy": 0.831640625
+        },
+        "misorder_near": {
+          "tp": 0,
+          "fp": 56,
+          "fn": 80,
+          "tn": 1224,
+          "accuracy": 0.9,
+          "recall": 0.0,
+          "precision": 0.0,
+          "false_positive_rate": 0.04375,
+          "balanced_accuracy": 0.478125
+        },
+        "misorder_far": {
+          "tp": 28,
+          "fp": 52,
+          "fn": 52,
+          "tn": 1228,
+          "accuracy": 0.9235294117647059,
+          "recall": 0.35,
+          "precision": 0.35,
+          "false_positive_rate": 0.040625,
+          "balanced_accuracy": 0.6546875000000001
+        }
+      },
+      "regularization": 0.1
+    },
+    "neighbour_images_and_expected_mri": {
+      "validation": {
+        "tp": 175,
+        "fp": 233,
+        "fn": 145,
+        "tn": 4887,
+        "accuracy": 0.930514705882353,
+        "recall": 0.546875,
+        "precision": 0.42892156862745096,
+        "false_positive_rate": 0.0455078125,
+        "balanced_accuracy": 0.75068359375
+      },
+      "by_kind": {
+        "flip": {
+          "tp": 54,
+          "fp": 57,
+          "fn": 26,
+          "tn": 1223,
+          "accuracy": 0.9389705882352941,
+          "recall": 0.675,
+          "precision": 0.4864864864864865,
+          "false_positive_rate": 0.04453125,
+          "balanced_accuracy": 0.8152343750000001
+        },
+        "damage": {
+          "tp": 62,
+          "fp": 48,
+          "fn": 18,
+          "tn": 1232,
+          "accuracy": 0.9514705882352941,
+          "recall": 0.775,
+          "precision": 0.5636363636363636,
+          "false_positive_rate": 0.0375,
+          "balanced_accuracy": 0.8687499999999999
+        },
+        "misorder_near": {
+          "tp": 26,
+          "fp": 61,
+          "fn": 54,
+          "tn": 1219,
+          "accuracy": 0.9154411764705882,
+          "recall": 0.325,
+          "precision": 0.2988505747126437,
+          "false_positive_rate": 0.04765625,
+          "balanced_accuracy": 0.638671875
+        },
+        "misorder_far": {
+          "tp": 33,
+          "fp": 67,
+          "fn": 47,
+          "tn": 1213,
+          "accuracy": 0.9161764705882353,
+          "recall": 0.4125,
+          "precision": 0.33,
+          "false_positive_rate": 0.05234375,
+          "balanced_accuracy": 0.6800781250000001
+        }
+      },
+      "regularization": 0.001
+    }
+  },
+  "results": {
+    "BigBrain": {
+      "unique_sections": 66,
+      "evaluated_sections": 62,
+      "section_ids": [
+        "294",
+        "295",
+        "296",
+        "297",
+        "298",
+        "299",
+        "300",
+        "301",
+        "302",
+        "303",
+        "304",
+        "305",
+        "306",
+        "307",
+        "308",
+        "309",
+        "310",
+        "311",
+        "312",
+        "313",
+        "314",
+        "315",
+        "316",
+        "317",
+        "318",
+        "319",
+        "320",
+        "321",
+        "322",
+        "323",
+        "324",
+        "325",
+        "326",
+        "327",
+        "328",
+        "329",
+        "330",
+        "331",
+        "332",
+        "333",
+        "334",
+        "335",
+        "336",
+        "337",
+        "338",
+        "339",
+        "340",
+        "341",
+        "342",
+        "343",
+        "344",
+        "345",
+        "346",
+        "347",
+        "348",
+        "349",
+        "350",
+        "351",
+        "352",
+        "353",
+        "354",
+        "355",
+        "356",
+        "357",
+        "358",
+        "361"
+      ],
+      "methods": {
+        "neighbour_images": {
+          "pooled": {
+            "tp": 105,
+            "fp": 521,
+            "fn": 95,
+            "tn": 4239,
+            "accuracy": 0.8758064516129033,
+            "recall": 0.525,
+            "precision": 0.16773162939297126,
+            "false_positive_rate": 0.10945378151260504,
+            "balanced_accuracy": 0.7077731092436974
+          },
+          "by_kind": {
+            "flip": {
+              "tp": 33,
+              "fp": 131,
+              "fn": 27,
+              "tn": 1049,
+              "accuracy": 0.8725806451612903,
+              "recall": 0.55,
+              "precision": 0.20121951219512196,
+              "false_positive_rate": 0.11101694915254237,
+              "balanced_accuracy": 0.7194915254237289
+            },
+            "damage": {
+              "tp": 57,
+              "fp": 123,
+              "fn": 3,
+              "tn": 1057,
+              "accuracy": 0.8983870967741936,
+              "recall": 0.95,
+              "precision": 0.31666666666666665,
+              "false_positive_rate": 0.10423728813559321,
+              "balanced_accuracy": 0.9228813559322033
+            },
+            "misorder_near": {
+              "tp": 7,
+              "fp": 135,
+              "fn": 33,
+              "tn": 1065,
+              "accuracy": 0.864516129032258,
+              "recall": 0.175,
+              "precision": 0.04929577464788732,
+              "false_positive_rate": 0.1125,
+              "balanced_accuracy": 0.53125
+            },
+            "misorder_far": {
+              "tp": 8,
+              "fp": 132,
+              "fn": 32,
+              "tn": 1068,
+              "accuracy": 0.867741935483871,
+              "recall": 0.2,
+              "precision": 0.05714285714285714,
+              "false_positive_rate": 0.11,
+              "balanced_accuracy": 0.5449999999999999
+            }
+          },
+          "untouched_stack_flag_count": 7,
+          "untouched_stack_evaluated_sections": 62,
+          "untouched_stack_flag_rate": 0.11290322580645161,
+          "target_met": false
+        },
+        "neighbour_images_and_expected_mri": {
+          "pooled": {
+            "tp": 112,
+            "fp": 685,
+            "fn": 88,
+            "tn": 4075,
+            "accuracy": 0.8441532258064516,
+            "recall": 0.56,
+            "precision": 0.14052697616060225,
+            "false_positive_rate": 0.14390756302521007,
+            "balanced_accuracy": 0.708046218487395
+          },
+          "by_kind": {
+            "flip": {
+              "tp": 26,
+              "fp": 168,
+              "fn": 34,
+              "tn": 1012,
+              "accuracy": 0.8370967741935483,
+              "recall": 0.43333333333333335,
+              "precision": 0.13402061855670103,
+              "false_positive_rate": 0.1423728813559322,
+              "balanced_accuracy": 0.6454802259887006
+            },
+            "damage": {
+              "tp": 55,
+              "fp": 168,
+              "fn": 5,
+              "tn": 1012,
+              "accuracy": 0.8604838709677419,
+              "recall": 0.9166666666666666,
+              "precision": 0.24663677130044842,
+              "false_positive_rate": 0.1423728813559322,
+              "balanced_accuracy": 0.8871468926553672
+            },
+            "misorder_near": {
+              "tp": 8,
+              "fp": 172,
+              "fn": 32,
+              "tn": 1028,
+              "accuracy": 0.8354838709677419,
+              "recall": 0.2,
+              "precision": 0.044444444444444446,
+              "false_positive_rate": 0.14333333333333334,
+              "balanced_accuracy": 0.5283333333333333
+            },
+            "misorder_far": {
+              "tp": 23,
+              "fp": 177,
+              "fn": 17,
+              "tn": 1023,
+              "accuracy": 0.8435483870967742,
+              "recall": 0.575,
+              "precision": 0.115,
+              "false_positive_rate": 0.1475,
+              "balanced_accuracy": 0.71375
+            }
+          },
+          "untouched_stack_flag_count": 9,
+          "untouched_stack_evaluated_sections": 62,
+          "untouched_stack_flag_rate": 0.14516129032258066,
+          "target_met": false
+        }
+      },
+      "all_negative_baseline": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 200,
+        "tn": 4760,
+        "accuracy": 0.9596774193548387,
+        "recall": 0.0,
+        "precision": null,
+        "false_positive_rate": 0.0,
+        "balanced_accuracy": 0.5
+      },
+      "actual_error_fraction": 0.04032258064516129
+    },
+    "Allen_labels": {
+      "unique_sections": 16,
+      "evaluated_sections": 12,
+      "section_ids": [
+        "089",
+        "090",
+        "091",
+        "093",
+        "094",
+        "095",
+        "096",
+        "097",
+        "098",
+        "099",
+        "100",
+        "101",
+        "102",
+        "104",
+        "105",
+        "106"
+      ],
+      "methods": {
+        "neighbour_images": {
+          "pooled": {
+            "tp": 45,
+            "fp": 0,
+            "fn": 75,
+            "tn": 840,
+            "accuracy": 0.921875,
+            "recall": 0.375,
+            "precision": 1.0,
+            "false_positive_rate": 0.0,
+            "balanced_accuracy": 0.6875
+          },
+          "by_kind": {
+            "flip": {
+              "tp": 20,
+              "fp": 0,
+              "fn": 0,
+              "tn": 220,
+              "accuracy": 1.0,
+              "recall": 1.0,
+              "precision": 1.0,
+              "false_positive_rate": 0.0,
+              "balanced_accuracy": 1.0
+            },
+            "damage": {
+              "tp": 19,
+              "fp": 0,
+              "fn": 1,
+              "tn": 220,
+              "accuracy": 0.9958333333333333,
+              "recall": 0.95,
+              "precision": 1.0,
+              "false_positive_rate": 0.0,
+              "balanced_accuracy": 0.975
+            },
+            "misorder_near": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 40,
+              "tn": 200,
+              "accuracy": 0.8333333333333334,
+              "recall": 0.0,
+              "precision": null,
+              "false_positive_rate": 0.0,
+              "balanced_accuracy": 0.5
+            },
+            "misorder_far": {
+              "tp": 6,
+              "fp": 0,
+              "fn": 34,
+              "tn": 200,
+              "accuracy": 0.8583333333333333,
+              "recall": 0.15,
+              "precision": 1.0,
+              "false_positive_rate": 0.0,
+              "balanced_accuracy": 0.575
+            }
+          },
+          "untouched_stack_flag_count": 0,
+          "untouched_stack_evaluated_sections": 12,
+          "untouched_stack_flag_rate": 0.0,
+          "target_met": false
+        },
+        "neighbour_images_and_expected_mri": {
+          "pooled": {
+            "tp": 120,
+            "fp": 555,
+            "fn": 0,
+            "tn": 285,
+            "accuracy": 0.421875,
+            "recall": 1.0,
+            "precision": 0.17777777777777778,
+            "false_positive_rate": 0.6607142857142857,
+            "balanced_accuracy": 0.6696428571428572
+          },
+          "by_kind": {
+            "flip": {
+              "tp": 20,
+              "fp": 110,
+              "fn": 0,
+              "tn": 110,
+              "accuracy": 0.5416666666666666,
+              "recall": 1.0,
+              "precision": 0.15384615384615385,
+              "false_positive_rate": 0.5,
+              "balanced_accuracy": 0.75
+            },
+            "damage": {
+              "tp": 20,
+              "fp": 158,
+              "fn": 0,
+              "tn": 62,
+              "accuracy": 0.3416666666666667,
+              "recall": 1.0,
+              "precision": 0.11235955056179775,
+              "false_positive_rate": 0.7181818181818181,
+              "balanced_accuracy": 0.6409090909090909
+            },
+            "misorder_near": {
+              "tp": 40,
+              "fp": 148,
+              "fn": 0,
+              "tn": 52,
+              "accuracy": 0.38333333333333336,
+              "recall": 1.0,
+              "precision": 0.2127659574468085,
+              "false_positive_rate": 0.74,
+              "balanced_accuracy": 0.63
+            },
+            "misorder_far": {
+              "tp": 40,
+              "fp": 139,
+              "fn": 0,
+              "tn": 61,
+              "accuracy": 0.42083333333333334,
+              "recall": 1.0,
+              "precision": 0.22346368715083798,
+              "false_positive_rate": 0.695,
+              "balanced_accuracy": 0.6525000000000001
+            }
+          },
+          "untouched_stack_flag_count": 9,
+          "untouched_stack_evaluated_sections": 12,
+          "untouched_stack_flag_rate": 0.75,
+          "target_met": false
+        }
+      },
+      "all_negative_baseline": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 120,
+        "tn": 840,
+        "accuracy": 0.875,
+        "recall": 0.0,
+        "precision": null,
+        "false_positive_rate": 0.0,
+        "balanced_accuracy": 0.5
+      },
+      "actual_error_fraction": 0.125
+    }
+  },
+  "limitations": [
+    "Injected errors on real images, not expert-labelled naturally occurring errors",
+    "Repeated trials reuse sections and are not independent subject observations",
+    "Two donors only; independent donor test applies only when donor_calibrated is false",
+    "Publisher affine alignment and paired MRIs already supplied",
+    "Manual landmark files described in the paper are absent from the public release",
+    "Slice ID differences are not converted to millimetres or angle accuracy",
+    "Thresholds are frozen before tests; test findings are exploratory once inspected",
+    "Near swaps exchange adjacent available sections; far swaps span at least 1/4 stack"
+  ]
+}
