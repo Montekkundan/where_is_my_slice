@@ -35,6 +35,7 @@ def make_examples(
     pairwise=False,
     stack_normalized=False,
     patch_encoder=None,
+    sequence=False,
 ):
     """Same seeds apply to each method. Truth is consumed only after feature extraction."""
     rows, labels, kinds, trial_ids, slots = [], [], [], [], []
@@ -88,6 +89,12 @@ def make_examples(
                     )
                 )
                 measurements = np.column_stack((measurements, extra))
+            if sequence:
+                from slicegps.sequence_qa import sequence_features
+
+                measurements = np.column_stack(
+                    (measurements, sequence_features(observed, cache=measurement_cache))
+                )
             if stack_normalized:
                 measurements = normalize_stack_features(measurements)
             selected = np.arange(2, len(histology) - 2)
@@ -113,6 +120,8 @@ def subset_features(x, paired):
         indices += list(range(30, 37))
     if x.shape[1] == 45:
         indices += list(range(38, 45))
+    if x.shape[1] == 54:
+        indices += list(range(30, 54))
     return x[:, indices]
 
 
@@ -133,13 +142,14 @@ def run(
     pairwise: bool = False,
     stack_normalized: bool = False,
     patch_encoder=None,
+    sequence=False,
 ):
     if output.exists():
         raise FileExistsError(output)
     if trials < 2:
         raise ValueError("At least two corruption trials are required")
     manifest = fetch_sbr(root) if fetch else json.loads((root / "sources.json").read_text())
-    if sum((pairwise, encoder is not None, patch_encoder is not None)) > 1:
+    if sum((pairwise, encoder is not None, patch_encoder is not None, sequence)) > 1:
         raise ValueError("Choose one feature alternative")
     image_size = 192 if pairwise else 96
     hist, mri, ids = load_sbr(root, "BigBrain", size=image_size)
@@ -183,6 +193,7 @@ def run(
                     pairwise,
                     stack_normalized,
                     patch_encoder,
+                    sequence,
                 )
             )
         examples[name] = tuple(np.concatenate([part[i] for part in parts]) for i in range(5))
@@ -208,12 +219,17 @@ def run(
                 "stack_error_patch_v1"
                 if patch_encoder is not None
                 else (
-                    "stack_error_pairwise_v1" if paired and pairwise else "stack_error_features_v3"
+                    "stack_error_sequence_v1"
+                    if sequence
+                    else "stack_error_pairwise_v1"
+                    if paired and pairwise
+                    else "stack_error_features_v3"
                 )
             ),
             image_size=image_size,
             stack_normalized=stack_normalized,
             patch_features=patch_encoder is not None,
+            sequence_features=sequence,
             patch_weights_sha256=(
                 hashlib.sha256((output / "patch_encoder.safetensors").read_bytes()).hexdigest()
                 if patch_encoder is not None
@@ -244,7 +260,7 @@ def run(
             h, t, section_ids = load_sbr(root, dataset, size=image_size)
         print(f"Testing {dataset}: {len(h)} unique sections", flush=True)
         x, truth, kinds, trial_ids, slots = make_examples(
-            h, t, trials, 48301, encoder, pairwise, stack_normalized, patch_encoder
+            h, t, trials, 48301, encoder, pairwise, stack_normalized, patch_encoder, sequence
         )
         observed = {}
         for name, model in models.items():
@@ -276,6 +292,10 @@ def run(
                         np.sum(flipped * reference, axis=1) - np.sum(desc * reference, axis=1),
                     )
                 )
+            if sequence:
+                from slicegps.sequence_qa import sequence_features
+
+                clean_measurements = np.column_stack((clean_measurements, sequence_features(h)))
             if stack_normalized:
                 clean_measurements = normalize_stack_features(clean_measurements)
             clean_scores = detector_scores(
@@ -327,6 +347,7 @@ def run(
         "source_revision": SBR_REVISION,
         "learned_features": encoder.metadata if encoder is not None else None,
         "pairwise_comparisons": pairwise,
+        "sequence_features": sequence,
         "patch_features": patch_encoder.metadata if patch_encoder is not None else None,
         "stack_normalized": stack_normalized,
         "source": manifest["source"],
@@ -353,7 +374,11 @@ def run(
                 else (
                     "Self-similarity, NMI and reciprocal swap gains"
                     if pairwise
-                    else "Baseline local context"
+                    else (
+                        "Adjacent exchange path, curvature and trajectory evidence"
+                        if sequence
+                        else "Baseline local context"
+                    )
                 )
             ),
             "preprocessing": (
@@ -399,6 +424,7 @@ if __name__ == "__main__":
     methods.add_argument("--learned", action="store_true")
     methods.add_argument("--pairwise", action="store_true")
     methods.add_argument("--patch-model", type=Path)
+    methods.add_argument("--sequence", action="store_true")
     parser.add_argument("--donor-calibrated", action="store_true")
     parser.add_argument("--stack-normalized", action="store_true")
     args = parser.parse_args()
@@ -422,4 +448,5 @@ if __name__ == "__main__":
         args.pairwise,
         args.stack_normalized,
         patch_encoder,
+        args.sequence,
     )

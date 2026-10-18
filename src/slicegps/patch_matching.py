@@ -17,6 +17,7 @@ import numpy as np
 from .data import write_json
 from .error_detection import _images, canonical_histology, context_features
 from .pairwise_qa import comparison_features
+from .sequence_qa import paper_histology
 from .training import _device, _torch
 
 ARCHITECTURE = "paired_patch_cnn_v1"
@@ -63,14 +64,7 @@ def prepare(images, modality, preprocessing="canonical_v1"):
         if preprocessing == "canonical_v1":
             images = canonical_histology(images)
         else:
-            # A small mounting sheet can occupy less than 20% of the canvas.
-            # Its broad almost-white plateau distinguishes it from tissue highlights.
-            cleaned = []
-            for image in images:
-                scaled = (image - image.min()) / np.ptp(image)
-                fraction = 0.0 if np.mean(scaled > 0.98) > 0.04 else 0.2
-                cleaned.append(canonical_histology(image[None], paper_fraction=fraction)[0])
-            images = np.stack(cleaned)
+            images = paper_histology(images)
     low = images.min(axis=(1, 2), keepdims=True)
     high = images.max(axis=(1, 2), keepdims=True)
     if np.any(high <= low):

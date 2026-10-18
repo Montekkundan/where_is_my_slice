@@ -61,7 +61,9 @@ No method meets the target across error types and donors. The calibrated paired
 model detects only 17.5% of nearby BigBrain swaps. DINOv2 features did not improve
 the image/MRI baseline. The convolutional matcher uses separate histology/MRI
 encoders, adjacent training negatives and clean validation pairs for checkpoint
-selection. Its paper-background variant also misses most nearby BigBrain swaps.
+selection. Its paper-background variant also misses most nearby BigBrain swaps. Direct
+adjacent-swap continuity features raise nearby-swap recall to 30% on BigBrain,
+but flag 12.6% of clean sections in that test.
 Uncalibrated models can flag every Allen section; that is
 a failure. Calling every section clean already gives about 95–96% raw accuracy
 in the independent tests, so recall and false alarms are reported together.

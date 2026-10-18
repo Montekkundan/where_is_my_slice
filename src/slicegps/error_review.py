@@ -36,6 +36,7 @@ def review_errors(
         "stack_error_features_v3",
         "stack_error_pairwise_v1",
         "stack_error_patch_v1",
+        "stack_error_sequence_v1",
     ):
         raise ValueError("Unknown detector feature contract")
     if model["expected_mri_required"] and mri_sections is None:
@@ -76,6 +77,10 @@ def review_errors(
         from .pairwise_qa import PairwiseFeatures
 
         measurements = np.column_stack((measurements, PairwiseFeatures(mri).measure(images)))
+    if contract == "stack_error_sequence_v1":
+        from .sequence_qa import sequence_features
+
+        measurements = np.column_stack((measurements, sequence_features(images)))
     if contract == "stack_error_patch_v1":
         from .patch_matching import PatchErrorFeatures, PatchMatcher
 
