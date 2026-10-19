@@ -16,13 +16,10 @@ uv venv --python 3.12
 source .venv/bin/activate
 uv pip install -e '.[dev,learned]'
 slicegps fetch-sbr --root data/synthbyreg
+python scripts/evaluate_errors.py --issue-demo --stack-normalized --output outputs/demo
+python scripts/evaluate_errors.py --issue-demo --sequence --mlp-head --stack-normalized \
+  --output outputs/demo-mlp
 python scripts/evaluate_errors.py --output outputs/errors
-python scripts/evaluate_errors.py --pairwise --donor-calibrated --stack-normalized \
-  --output outputs/errors-paired
-python scripts/train_patch_matcher.py --donor-calibrated --preprocessing paper_v2 \
-  --output outputs/patch-matcher
-python scripts/evaluate_errors.py --donor-calibrated --stack-normalized \
-  --patch-model outputs/patch-matcher/patch_encoder.safetensors --output outputs/errors-learned
 pytest -q
 ```
 
@@ -44,45 +41,45 @@ directories. Data, weights and full outputs stay local.
 
 ## Results
 
-These tests use four error types and 20 trials per type. BigBrain has 62 evaluated
-test sections. Independent Allen testing uses 89; models trained on both donors
-have only 12 Allen test sections. Repeated trials reuse sections.
+The main demo follows [issue #10](https://github.com/tfunck/bigbrainhack2026/issues/10):
+randomly shuffle some sections and flip others, changing about 5% of a stack.
+Shuffles can include immediate neighbours. Each experiment uses 20 fixed trials;
+models and thresholds are selected on BigBrain training/validation sections,
+then frozen before testing. Error locations are hidden from the detector.
 
-| Detector | Test | Errors detected | Clean sections falsely flagged |
-| --- | --- | ---: | ---: |
-| Image measurements + expected MRI | BigBrain | 77.5% | 6.5% |
-| Images + stack calibration | Unseen Allen | 84.1% | 10.2% |
-| Paired comparisons + stack calibration, trained on both donors | BigBrain | 74.5% | 4.7% |
-| Paired comparisons + stack calibration, trained on both donors | Allen | 85.8% | 7.5% |
-| Trained convolutional matcher + stack calibration, both donors | BigBrain | 79.5% | 7.1% |
-| Trained convolutional matcher + stack calibration, both donors | Allen | 66.7% | 10.7% |
+| Detector | Test | Errors detected | Clean sections falsely flagged | Precision of flags |
+| --- | --- | ---: | ---: | ---: |
+| Image measurements + expected MRI | BigBrain | 93.3% | 13.1% | 26.7% |
+| Image measurements + expected MRI | Unseen Allen | 93.8% | 14.3% | 23.6% |
+| Image-only sequence features + nonlinear classifier | BigBrain | 81.7% | 7.3% | 36.3% |
+| Image-only sequence features + nonlinear classifier | Unseen Allen | 92.5% | 1.2% | 77.9% |
 
-No method meets the target across error types and donors. The calibrated paired
-model detects only 17.5% of nearby BigBrain swaps. DINOv2 features did not improve
-the image/MRI baseline. The convolutional matcher uses separate histology/MRI
-encoders, adjacent training negatives and clean validation pairs for checkpoint
-selection. Its paper-background variant also misses most nearby BigBrain swaps. Direct
-adjacent-swap continuity features raise nearby-swap recall to 30% on BigBrain,
-but flag 12.6% of clean sections in that test. A nonlinear classifier reduces
-pooled false alarms to 6.1% on BigBrain and 2.3% on Allen, with only 74.5% and
-70.0% recall respectively. It also falls short.
-Uncalibrated models can flag every Allen section; that is
-a failure. Calling every section clean already gives about 95–96% raw accuracy
-in the independent tests, so recall and false alarms are reported together.
-Stack calibration uses the observed stack's median and interquartile range,
-assuming most supplied sections are correct.
+**The 95–98% reliable detection target is not met.** BigBrain has 62 evaluated
+test sections and Allen has 89. Repeated trials reuse them, rather than adding
+donors. Calling every section clean already gives about 95% raw accuracy, so
+recall, false alarms and precision must be considered together. These are
+exploratory tests on two donors, with injected errors and supplied affine alignment.
+The reader flags suspected errors; it does not automatically restore a stack.
 
-See [all per-error results](results/error_detection.csv) and the [protocol JSONs](results/).
-To reproduce a saved trial through the reader, run
-`python scripts/review_sbr_case.py --run outputs/errors --kind flip --output outputs/example`.
-It checks predictions against the benchmark and writes truth separately.
+Separate stress tests retain flips, damage, forced adjacent swaps and distant
+swaps. The calibrated paired-comparison model detects only 17.5% of nearby
+BigBrain swaps. DINOv2, a trained histology/MRI convolutional matcher and direct
+sequence continuity features have not met the target. Stack calibration uses
+only the observed stack's median/IQR, assuming most sections are correct.
+See [all measured results](results/error_detection.csv) and [protocol JSONs](results/).
 
-The detector uses pixels and neighbouring images, without reading section IDs or
-clean copies. IDs/order establish the injected-error ground truth for scoring.
-The paper's manual landmark files are absent from the public release we used;
-this tests injected errors, rather than naturally occurring ones. It does not
-reproduce the paper's registration model. Earlier atlas retrieval results remain
-in [benchmarks.csv](results/benchmarks.csv).
+Reproduce a mixed trial through the image reader:
+
+```bash
+python scripts/review_sbr_case.py --run outputs/demo --kind shuffle_flip \
+  --method neighbour_images_and_expected_mri --output outputs/demo-review
+```
+
+This verifies saved prediction parity and writes truth separately. Section IDs/order
+establish injected-error truth; the detector uses pixels, without IDs or clean copies.
+The paper's manual landmark files are absent from the public release used here.
+Naturally occurring errors and the paper's registration model have not been validated.
+Earlier atlas retrieval results remain in [benchmarks.csv](results/benchmarks.csv).
 
 ## Data and credits
 

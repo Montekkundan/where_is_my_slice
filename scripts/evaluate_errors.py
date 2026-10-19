@@ -11,6 +11,7 @@ from pathlib import Path
 import numpy as np
 
 from slicegps.data import write_json
+from slicegps.demo_corruption import DEMO_KIND, demo_subgroups, inject_demo_errors
 from slicegps.error_detection import (
     ERROR_KINDS,
     classification_metrics,
@@ -36,6 +37,7 @@ def make_examples(
     stack_normalized=False,
     patch_encoder=None,
     sequence=False,
+    issue_demo=False,
 ):
     """Same seeds apply to each method. Truth is consumed only after feature extraction."""
     rows, labels, kinds, trial_ids, slots = [], [], [], [], []
@@ -71,9 +73,13 @@ def make_examples(
                 descriptor_cache[image.tobytes()] = descriptor
         return np.stack([descriptor_cache[key] for key in keys])
 
-    for k, kind in enumerate(ERROR_KINDS):
+    for k, kind in enumerate((DEMO_KIND,) if issue_demo else ERROR_KINDS):
         for trial in range(trials):
-            observed, truth = inject_errors(histology, kind, 0.05, seed + k * 10000 + trial)
+            observed, truth = (
+                inject_demo_errors(histology, 0.05, seed + trial)
+                if issue_demo
+                else inject_errors(histology, kind, 0.05, seed + k * 10000 + trial)
+            )
             measurements = error_features(observed, mri, cache=measurement_cache)
             if comparator is not None:
                 measurements = np.column_stack((measurements, comparator.measure(observed)))
@@ -128,7 +134,7 @@ def subset_features(x, paired):
 def metrics_by_kind(labels, flagged, kinds):
     return {
         kind: classification_metrics(labels[kinds == kind], flagged[kinds == kind])
-        for kind in ERROR_KINDS
+        for kind in np.unique(kinds)
     }
 
 
@@ -144,9 +150,12 @@ def run(
     patch_encoder=None,
     sequence=False,
     nonlinear=False,
+    issue_demo=False,
 ):
     if output.exists():
         raise FileExistsError(output)
+    if issue_demo and donor_calibrated:
+        raise ValueError("Allen validation/test bands are too small for the mixed 5% demo")
     if trials < 2:
         raise ValueError("At least two corruption trials are required")
     manifest = fetch_sbr(root) if fetch else json.loads((root / "sources.json").read_text())
@@ -179,7 +188,10 @@ def run(
             raise ValueError("Patch encoder training split differs from this benchmark")
         patch_encoder.save(output / "patch_encoder.safetensors")
     examples = {}
-    for name, seed in (("train", 48101), ("validation", 48201)):
+    for name, seed in (
+        ("train", 49101 if issue_demo else 48101),
+        ("validation", 49201 if issue_demo else 48201),
+    ):
         parts = []
         for dataset, (histology, reference_mri, _) in datasets.items():
             selected = splits[dataset][name]
@@ -195,6 +207,7 @@ def run(
                     stack_normalized,
                     patch_encoder,
                     sequence,
+                    issue_demo,
                 )
             )
         examples[name] = tuple(np.concatenate([part[i] for part in parts]) for i in range(5))
@@ -239,6 +252,7 @@ def run(
             stack_normalized=stack_normalized,
             patch_features=patch_encoder is not None,
             sequence_features=sequence,
+            corruption_protocol="issue_demo_v1" if issue_demo else "stress_v1",
             patch_weights_sha256=(
                 hashlib.sha256((output / "patch_encoder.safetensors").read_bytes()).hexdigest()
                 if patch_encoder is not None
@@ -270,7 +284,16 @@ def run(
             h, t, section_ids = load_sbr(root, dataset, size=image_size)
         print(f"Testing {dataset}: {len(h)} unique sections", flush=True)
         x, truth, kinds, trial_ids, slots = make_examples(
-            h, t, trials, 48301, encoder, pairwise, stack_normalized, patch_encoder, sequence
+            h,
+            t,
+            trials,
+            49301 if issue_demo else 48301,
+            encoder,
+            pairwise,
+            stack_normalized,
+            patch_encoder,
+            sequence,
+            issue_demo,
         )
         observed = {}
         for name, model in models.items():
@@ -326,6 +349,8 @@ def run(
                     for r in by_kind.values()
                 ),
             }
+            if issue_demo:
+                observed[name]["error_subgroups"] = demo_subgroups(h, trials, 49301, flags)
             with (output / f"{dataset}_{name}.csv").open("w", newline="") as stream:
                 writer = csv.writer(stream, lineterminator="\n")
                 writer.writerow(
@@ -355,6 +380,7 @@ def run(
     report = {
         "schema_version": 1,
         "source_revision": SBR_REVISION,
+        "project_issue": "https://github.com/tfunck/bigbrainhack2026/issues/10",
         "learned_features": encoder.metadata if encoder is not None else None,
         "pairwise_comparisons": pairwise,
         "sequence_features": sequence,
@@ -393,13 +419,25 @@ def run(
                 )
             ),
             "preprocessing": (
-                "Publisher affine-aligned images, common canvas retained; "
+                "Publisher affine-aligned images, common canvas retained"
+                if issue_demo
+                else "Publisher affine-aligned images, common canvas retained; "
                 "tissue-based tear placement"
             ),
             "selection": "Validation macro balanced accuracy; clean validation FPR <= 5 percent",
             "error_fraction_requested": 0.05,
             "trials_per_kind": trials,
-            "kinds": list(ERROR_KINDS),
+            "corruption_protocol": "issue_demo_v1" if issue_demo else "stress_v1",
+            "corruption": (
+                "Randomly select approximately 5% of interior slots; derange roughly half "
+                "and left-right flip the rest. No minimum shuffle distance. No damage."
+                if issue_demo
+                else "Each error kind injected separately"
+            ),
+            "seeds": {"train": 49101, "validation": 49201, "test": 49301}
+            if issue_demo
+            else {"train": 48101, "validation": 48201, "test": 48301},
+            "kinds": [DEMO_KIND] if issue_demo else list(ERROR_KINDS),
             "target": "Recall >=95%, precision >=95%, FPR <=5% for each error kind",
             "negative_control": "Untouched publisher stack; all-negative baseline also reported",
             "input": "Nominally ordered affine-aligned images; optional expected MRI per slot",
@@ -414,7 +452,13 @@ def run(
             "Manual landmark files described in the paper are absent from the public release",
             "Slice ID differences are not converted to millimetres or angle accuracy",
             "Thresholds are frozen before tests; test findings are exploratory once inspected",
-            "Near swaps exchange adjacent available sections; far swaps span at least 1/4 stack",
+            (
+                "Random shuffles may include adjacent slots; "
+                "separate stress tests retain forced near swaps"
+                if issue_demo
+                else "Near swaps exchange adjacent available sections; "
+                "far swaps span at least 1/4 stack"
+            ),
         ],
     }
     if stack_normalized:
@@ -439,6 +483,11 @@ if __name__ == "__main__":
     parser.add_argument("--donor-calibrated", action="store_true")
     parser.add_argument("--stack-normalized", action="store_true")
     parser.add_argument("--mlp-head", action="store_true")
+    parser.add_argument(
+        "--issue-demo",
+        action="store_true",
+        help="Mixed random shuffle/flip 5% demo; independent donor protocol",
+    )
     args = parser.parse_args()
     encoder = None
     if args.learned:
@@ -462,4 +511,5 @@ if __name__ == "__main__":
         patch_encoder,
         args.sequence,
         args.mlp_head,
+        args.issue_demo,
     )

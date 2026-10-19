@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "slicegps"
 version = "0.1.0"
-description = "Geometry-first histology slice localization and block-aware data preparation"
+description = "Experimental histology slice localization and stack error detection"
 requires-python = ">=3.12"
 dependencies = ["numpy>=2.0", "scipy>=1.13", "nibabel>=5.2", "pillow>=10.4"]
 

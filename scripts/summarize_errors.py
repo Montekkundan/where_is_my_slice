@@ -31,7 +31,12 @@ def summarize(runs: list[Path], output: Path):
         if report.get("stack_normalized"):
             features += "_normalized"
         scope = "calibrated" if report["protocol"]["donor_calibrated"] else "independent"
-        name = f"error_detection_{features}_{scope}"
+        prefix = (
+            "issue_demo"
+            if report["protocol"].get("corruption_protocol") == "issue_demo_v1"
+            else "error_detection"
+        )
+        name = f"{prefix}_{features}_{scope}"
         write_json(output / f"{name}.json", report)
         for dataset, result in report["results"].items():
             for method, measured in result["methods"].items():

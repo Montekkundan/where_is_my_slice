@@ -11,6 +11,7 @@ import numpy as np
 from PIL import Image
 
 from slicegps.data import write_json
+from slicegps.demo_corruption import DEMO_KIND, inject_demo_errors
 from slicegps.error_detection import ERROR_KINDS, classification_metrics, inject_errors
 from slicegps.error_review import review_errors
 from slicegps.sbr import load_sbr
@@ -28,8 +29,13 @@ def review_case(root, run, output, dataset, kind, trial=0, method="neighbour_ima
     expected_ids = report["results"][dataset]["section_ids"]
     selected = [ids.index(section_id) for section_id in expected_ids]
     histology, mri = histology[selected], mri[selected]
-    observed, truth = inject_errors(
-        histology, kind, 0.05, 48301 + ERROR_KINDS.index(kind) * 10000 + trial
+    demo = report["protocol"].get("corruption_protocol") == "issue_demo_v1"
+    if (kind == DEMO_KIND) != demo:
+        raise ValueError("Requested corruption kind does not match the saved protocol")
+    observed, truth = (
+        inject_demo_errors(histology, 0.05, 49301 + trial)
+        if demo
+        else inject_errors(histology, kind, 0.05, 48301 + ERROR_KINDS.index(kind) * 10000 + trial)
     )
     inputs = output / "inputs"
     inputs.mkdir(parents=True)
@@ -85,7 +91,7 @@ if __name__ == "__main__":
     parser.add_argument("--run", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--dataset", choices=("BigBrain", "Allen_labels"), default="BigBrain")
-    parser.add_argument("--kind", choices=ERROR_KINDS, default="flip")
+    parser.add_argument("--kind", choices=(*ERROR_KINDS, DEMO_KIND), default="flip")
     parser.add_argument("--trial", type=int, default=0)
     parser.add_argument(
         "--method",
