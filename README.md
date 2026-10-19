@@ -51,10 +51,13 @@ then frozen before testing. Error locations are hidden from the detector.
 | --- | --- | ---: | ---: | ---: |
 | Image measurements + expected MRI | BigBrain | 93.3% | 13.1% | 26.7% |
 | Image measurements + expected MRI | Unseen Allen | 93.8% | 14.3% | 23.6% |
+| Paired MRI comparisons | BigBrain | 98.3% | 3.9% | 56.2% |
+| Paired MRI comparisons | Unseen Allen | 70.0% | 10.8% | 23.3% |
 | Image-only sequence features + nonlinear classifier | BigBrain | 81.7% | 7.3% | 36.3% |
 | Image-only sequence features + nonlinear classifier | Unseen Allen | 92.5% | 1.2% | 77.9% |
 
-**The 95–98% reliable detection target is not met.** BigBrain has 62 evaluated
+**The 95–98% reliable detection target across donors is not met.** Paired comparisons
+reach 98.3% recall on BigBrain alone, with only 56.2% of flags correct. BigBrain has 62 evaluated
 test sections and Allen has 89. Repeated trials reuse them, rather than adding
 donors. Calling every section clean already gives about 95% raw accuracy, so
 recall, false alarms and precision must be considered together. These are

@@ -1,0 +1,499 @@
+{
+  "schema_version": 1,
+  "source_revision": "1b67b630cc4e8e03be210d6fb39210b722296902",
+  "project_issue": "https://github.com/tfunck/bigbrainhack2026/issues/10",
+  "learned_features": null,
+  "pairwise_comparisons": true,
+  "sequence_features": false,
+  "nonlinear_classifier": true,
+  "patch_features": null,
+  "stack_normalized": true,
+  "source": "https://github.com/acasamitjana/SynthByReg",
+  "paper": "https://arxiv.org/abs/2107.14449",
+  "protocol": {
+    "training": "BigBrain first 60 percent minus support guard",
+    "validation": "Middle 20 percent of training donors with support gaps",
+    "test": "BigBrain final 20 percent and entire independent Allen donor",
+    "donor_calibrated": false,
+    "guard_sections": 3,
+    "context_radius_sections": 2,
+    "image_size": 192,
+    "stack_normalization": "Observed stack median/IQR; boundary rows excluded",
+    "comparisons": "Self-similarity, NMI and reciprocal swap gains",
+    "preprocessing": "Publisher affine-aligned images, common canvas retained",
+    "selection": "Validation macro balanced accuracy; clean validation FPR <= 5 percent",
+    "error_fraction_requested": 0.05,
+    "trials_per_kind": 20,
+    "corruption_protocol": "issue_demo_v1",
+    "corruption": "Randomly select approximately 5% of interior slots; derange roughly half and left-right flip the rest. No minimum shuffle distance. No damage.",
+    "seeds": {
+      "train": 49101,
+      "validation": 49201,
+      "test": 49301
+    },
+    "kinds": [
+      "shuffle_flip"
+    ],
+    "target": "Recall >=95%, precision >=95%, FPR <=5% for each error kind",
+    "negative_control": "Untouched publisher stack; all-negative baseline also reported",
+    "input": "Nominally ordered affine-aligned images; optional expected MRI per slot"
+  },
+  "selection": {
+    "neighbour_images": {
+      "validation": {
+        "tp": 41,
+        "fp": 56,
+        "fn": 19,
+        "tn": 1064,
+        "accuracy": 0.9364406779661016,
+        "recall": 0.6833333333333333,
+        "precision": 0.422680412371134,
+        "false_positive_rate": 0.05,
+        "balanced_accuracy": 0.8166666666666667
+      },
+      "by_kind": {
+        "shuffle_flip": {
+          "tp": 41,
+          "fp": 56,
+          "fn": 19,
+          "tn": 1064,
+          "accuracy": 0.9364406779661016,
+          "recall": 0.6833333333333333,
+          "precision": 0.422680412371134,
+          "false_positive_rate": 0.05,
+          "balanced_accuracy": 0.8166666666666667
+        }
+      },
+      "regularization": 0.01,
+      "epochs": 25
+    },
+    "neighbour_images_and_expected_mri": {
+      "validation": {
+        "tp": 59,
+        "fp": 56,
+        "fn": 1,
+        "tn": 1064,
+        "accuracy": 0.9516949152542373,
+        "recall": 0.9833333333333333,
+        "precision": 0.5130434782608696,
+        "false_positive_rate": 0.05,
+        "balanced_accuracy": 0.9666666666666667
+      },
+      "by_kind": {
+        "shuffle_flip": {
+          "tp": 59,
+          "fp": 56,
+          "fn": 1,
+          "tn": 1064,
+          "accuracy": 0.9516949152542373,
+          "recall": 0.9833333333333333,
+          "precision": 0.5130434782608696,
+          "false_positive_rate": 0.05,
+          "balanced_accuracy": 0.9666666666666667
+        }
+      },
+      "regularization": 0.01,
+      "epochs": 100
+    }
+  },
+  "results": {
+    "BigBrain": {
+      "all_negative_baseline": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 60,
+        "tn": 1180,
+        "accuracy": 0.9516129032258065,
+        "recall": 0.0,
+        "precision": null,
+        "false_positive_rate": 0.0,
+        "balanced_accuracy": 0.5
+      },
+      "actual_error_fraction": 0.04838709677419355,
+      "unique_sections": 66,
+      "evaluated_sections": 62,
+      "section_ids": [
+        "294",
+        "295",
+        "296",
+        "297",
+        "298",
+        "299",
+        "300",
+        "301",
+        "302",
+        "303",
+        "304",
+        "305",
+        "306",
+        "307",
+        "308",
+        "309",
+        "310",
+        "311",
+        "312",
+        "313",
+        "314",
+        "315",
+        "316",
+        "317",
+        "318",
+        "319",
+        "320",
+        "321",
+        "322",
+        "323",
+        "324",
+        "325",
+        "326",
+        "327",
+        "328",
+        "329",
+        "330",
+        "331",
+        "332",
+        "333",
+        "334",
+        "335",
+        "336",
+        "337",
+        "338",
+        "339",
+        "340",
+        "341",
+        "342",
+        "343",
+        "344",
+        "345",
+        "346",
+        "347",
+        "348",
+        "349",
+        "350",
+        "351",
+        "352",
+        "353",
+        "354",
+        "355",
+        "356",
+        "357",
+        "358",
+        "361"
+      ],
+      "methods": {
+        "neighbour_images": {
+          "pooled": {
+            "tp": 49,
+            "fp": 93,
+            "fn": 11,
+            "tn": 1087,
+            "accuracy": 0.9161290322580645,
+            "recall": 0.8166666666666667,
+            "precision": 0.34507042253521125,
+            "false_positive_rate": 0.0788135593220339,
+            "balanced_accuracy": 0.8689265536723164
+          },
+          "by_kind": {
+            "shuffle_flip": {
+              "tp": 49,
+              "fp": 93,
+              "fn": 11,
+              "tn": 1087,
+              "accuracy": 0.9161290322580645,
+              "recall": 0.8166666666666667,
+              "precision": 0.34507042253521125,
+              "false_positive_rate": 0.0788135593220339,
+              "balanced_accuracy": 0.8689265536723164
+            }
+          },
+          "untouched_stack_flag_count": 5,
+          "untouched_stack_evaluated_sections": 62,
+          "untouched_stack_flag_rate": 0.08064516129032258,
+          "target_met": false,
+          "error_subgroups": {
+            "flipped": {
+              "errors": 20,
+              "detected": 15,
+              "recall": 0.75
+            },
+            "shuffled": {
+              "errors": 40,
+              "detected": 34,
+              "recall": 0.85
+            },
+            "shuffled_to_adjacent_available_slot": {
+              "errors": 0,
+              "detected": 0,
+              "recall": null
+            }
+          }
+        },
+        "neighbour_images_and_expected_mri": {
+          "pooled": {
+            "tp": 58,
+            "fp": 94,
+            "fn": 2,
+            "tn": 1086,
+            "accuracy": 0.9225806451612903,
+            "recall": 0.9666666666666667,
+            "precision": 0.3815789473684211,
+            "false_positive_rate": 0.07966101694915254,
+            "balanced_accuracy": 0.9435028248587571
+          },
+          "by_kind": {
+            "shuffle_flip": {
+              "tp": 58,
+              "fp": 94,
+              "fn": 2,
+              "tn": 1086,
+              "accuracy": 0.9225806451612903,
+              "recall": 0.9666666666666667,
+              "precision": 0.3815789473684211,
+              "false_positive_rate": 0.07966101694915254,
+              "balanced_accuracy": 0.9435028248587571
+            }
+          },
+          "untouched_stack_flag_count": 10,
+          "untouched_stack_evaluated_sections": 62,
+          "untouched_stack_flag_rate": 0.16129032258064516,
+          "target_met": false,
+          "error_subgroups": {
+            "flipped": {
+              "errors": 20,
+              "detected": 20,
+              "recall": 1.0
+            },
+            "shuffled": {
+              "errors": 40,
+              "detected": 38,
+              "recall": 0.95
+            },
+            "shuffled_to_adjacent_available_slot": {
+              "errors": 0,
+              "detected": 0,
+              "recall": null
+            }
+          }
+        }
+      }
+    },
+    "Allen_labels": {
+      "all_negative_baseline": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 80,
+        "tn": 1700,
+        "accuracy": 0.9550561797752809,
+        "recall": 0.0,
+        "precision": null,
+        "false_positive_rate": 0.0,
+        "balanced_accuracy": 0.5
+      },
+      "actual_error_fraction": 0.0449438202247191,
+      "unique_sections": 93,
+      "evaluated_sections": 89,
+      "section_ids": [
+        "002",
+        "003",
+        "004",
+        "005",
+        "007",
+        "008",
+        "009",
+        "010",
+        "011",
+        "012",
+        "013",
+        "014",
+        "015",
+        "016",
+        "017",
+        "018",
+        "019",
+        "020",
+        "021",
+        "022",
+        "023",
+        "025",
+        "027",
+        "028",
+        "029",
+        "030",
+        "031",
+        "032",
+        "033",
+        "035",
+        "036",
+        "037",
+        "038",
+        "039",
+        "040",
+        "041",
+        "042",
+        "043",
+        "044",
+        "045",
+        "046",
+        "048",
+        "049",
+        "050",
+        "051",
+        "052",
+        "053",
+        "054",
+        "055",
+        "056",
+        "057",
+        "058",
+        "059",
+        "060",
+        "061",
+        "062",
+        "063",
+        "065",
+        "066",
+        "067",
+        "068",
+        "069",
+        "070",
+        "072",
+        "073",
+        "074",
+        "075",
+        "076",
+        "078",
+        "079",
+        "080",
+        "081",
+        "082",
+        "084",
+        "085",
+        "086",
+        "087",
+        "089",
+        "090",
+        "091",
+        "093",
+        "094",
+        "095",
+        "096",
+        "097",
+        "098",
+        "099",
+        "100",
+        "101",
+        "102",
+        "104",
+        "105",
+        "106"
+      ],
+      "methods": {
+        "neighbour_images": {
+          "pooled": {
+            "tp": 73,
+            "fp": 15,
+            "fn": 7,
+            "tn": 1685,
+            "accuracy": 0.9876404494382023,
+            "recall": 0.9125,
+            "precision": 0.8295454545454546,
+            "false_positive_rate": 0.008823529411764706,
+            "balanced_accuracy": 0.9518382352941177
+          },
+          "by_kind": {
+            "shuffle_flip": {
+              "tp": 73,
+              "fp": 15,
+              "fn": 7,
+              "tn": 1685,
+              "accuracy": 0.9876404494382023,
+              "recall": 0.9125,
+              "precision": 0.8295454545454546,
+              "false_positive_rate": 0.008823529411764706,
+              "balanced_accuracy": 0.9518382352941177
+            }
+          },
+          "untouched_stack_flag_count": 4,
+          "untouched_stack_evaluated_sections": 89,
+          "untouched_stack_flag_rate": 0.0449438202247191,
+          "target_met": false,
+          "error_subgroups": {
+            "flipped": {
+              "errors": 40,
+              "detected": 40,
+              "recall": 1.0
+            },
+            "shuffled": {
+              "errors": 40,
+              "detected": 33,
+              "recall": 0.825
+            },
+            "shuffled_to_adjacent_available_slot": {
+              "errors": 2,
+              "detected": 0,
+              "recall": 0.0
+            }
+          }
+        },
+        "neighbour_images_and_expected_mri": {
+          "pooled": {
+            "tp": 52,
+            "fp": 246,
+            "fn": 28,
+            "tn": 1454,
+            "accuracy": 0.8460674157303371,
+            "recall": 0.65,
+            "precision": 0.174496644295302,
+            "false_positive_rate": 0.14470588235294118,
+            "balanced_accuracy": 0.7526470588235293
+          },
+          "by_kind": {
+            "shuffle_flip": {
+              "tp": 52,
+              "fp": 246,
+              "fn": 28,
+              "tn": 1454,
+              "accuracy": 0.8460674157303371,
+              "recall": 0.65,
+              "precision": 0.174496644295302,
+              "false_positive_rate": 0.14470588235294118,
+              "balanced_accuracy": 0.7526470588235293
+            }
+          },
+          "untouched_stack_flag_count": 15,
+          "untouched_stack_evaluated_sections": 89,
+          "untouched_stack_flag_rate": 0.16853932584269662,
+          "target_met": false,
+          "error_subgroups": {
+            "flipped": {
+              "errors": 40,
+              "detected": 26,
+              "recall": 0.65
+            },
+            "shuffled": {
+              "errors": 40,
+              "detected": 26,
+              "recall": 0.65
+            },
+            "shuffled_to_adjacent_available_slot": {
+              "errors": 2,
+              "detected": 1,
+              "recall": 0.5
+            }
+          }
+        }
+      }
+    }
+  },
+  "limitations": [
+    "Injected errors on real images, not expert-labelled naturally occurring errors",
+    "Repeated trials reuse sections and are not independent subject observations",
+    "Two donors only; independent donor test applies only when donor_calibrated is false",
+    "Publisher affine alignment and paired MRIs already supplied",
+    "Manual landmark files described in the paper are absent from the public release",
+    "Slice ID differences are not converted to millimetres or angle accuracy",
+    "Thresholds are frozen before tests; test findings are exploratory once inspected",
+    "Random shuffles may include adjacent slots; separate stress tests retain forced near swaps",
+    "Per-stack median/IQR calibration assumes a mostly correct observed stack"
+  ]
+}

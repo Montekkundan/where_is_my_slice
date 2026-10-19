@@ -219,3 +219,11 @@ issue_demo_sequence_mlp_normalized_independent,BigBrain,neighbour_images,shuffle
 issue_demo_sequence_mlp_normalized_independent,BigBrain,neighbour_images_and_expected_mri,shuffle_flip,62,50,188,10,992,0.8403225806451613,0.8333333333333334,0.21008403361344538,0.15932203389830507,0.8370056497175142
 issue_demo_sequence_mlp_normalized_independent,Allen_labels,neighbour_images,shuffle_flip,89,74,21,6,1679,0.9848314606741573,0.925,0.7789473684210526,0.012352941176470587,0.9563235294117647
 issue_demo_sequence_mlp_normalized_independent,Allen_labels,neighbour_images_and_expected_mri,shuffle_flip,89,25,169,55,1531,0.8741573033707866,0.3125,0.12886597938144329,0.09941176470588235,0.6065441176470588
+issue_demo_pairwise_normalized_independent,BigBrain,neighbour_images,shuffle_flip,62,52,143,8,1037,0.8782258064516129,0.8666666666666667,0.26666666666666666,0.1211864406779661,0.8727401129943503
+issue_demo_pairwise_normalized_independent,BigBrain,neighbour_images_and_expected_mri,shuffle_flip,62,59,46,1,1134,0.9620967741935483,0.9833333333333333,0.5619047619047619,0.03898305084745763,0.9721751412429379
+issue_demo_pairwise_normalized_independent,Allen_labels,neighbour_images,shuffle_flip,89,66,216,14,1484,0.8707865168539326,0.825,0.23404255319148937,0.12705882352941175,0.8489705882352941
+issue_demo_pairwise_normalized_independent,Allen_labels,neighbour_images_and_expected_mri,shuffle_flip,89,56,184,24,1516,0.8831460674157303,0.7,0.23333333333333334,0.10823529411764705,0.7958823529411765
+issue_demo_pairwise_mlp_normalized_independent,BigBrain,neighbour_images,shuffle_flip,62,49,93,11,1087,0.9161290322580645,0.8166666666666667,0.34507042253521125,0.0788135593220339,0.8689265536723164
+issue_demo_pairwise_mlp_normalized_independent,BigBrain,neighbour_images_and_expected_mri,shuffle_flip,62,58,94,2,1086,0.9225806451612903,0.9666666666666667,0.3815789473684211,0.07966101694915254,0.9435028248587571
+issue_demo_pairwise_mlp_normalized_independent,Allen_labels,neighbour_images,shuffle_flip,89,73,15,7,1685,0.9876404494382023,0.9125,0.8295454545454546,0.008823529411764706,0.9518382352941177
+issue_demo_pairwise_mlp_normalized_independent,Allen_labels,neighbour_images_and_expected_mri,shuffle_flip,89,52,246,28,1454,0.8460674157303371,0.65,0.174496644295302,0.14470588235294118,0.7526470588235293
